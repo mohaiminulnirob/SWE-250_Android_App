@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project/widgets/custom_app_bar.dart';
 import 'dart:async';
 
 class WelcomePage extends StatefulWidget {
@@ -46,18 +47,7 @@ class WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "SpotEase SUST",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: const Color.fromARGB(197, 71, 21, 142),
-        elevation: 0,
-      ),
+      appBar: const CustomAppBar(title: "SpotEase SUST", showBackButton: false),
       backgroundColor: const Color.fromARGB(197, 21, 18, 24),
       body: Center(
         child: Padding(
@@ -81,7 +71,7 @@ class WelcomePageState extends State<WelcomePage> {
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 20,
+                    fontSize: 17,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Urbanist'),
               ),
