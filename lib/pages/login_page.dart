@@ -8,7 +8,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool _isPasswordVisible = false; // Toggle for password visibility
+  bool _isPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +26,9 @@ class _LoginPageState extends State<LoginPage> {
         backgroundColor: const Color.fromARGB(197, 71, 21, 142),
         elevation: 0,
         leading: IconButton(
-          // Back button
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.pop(context); // Go back to the previous screen
+            Navigator.pop(context);
           },
         ),
       ),
@@ -40,11 +39,8 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // App Logo
                 Image.asset('assets/images/sust_logo.png', height: 120),
                 const SizedBox(height: 20),
-
-                // Welcome Text
                 const Text(
                   "Hello, welcome!",
                   style: TextStyle(
@@ -59,8 +55,6 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(color: Colors.white70, fontSize: 16),
                 ),
                 const SizedBox(height: 30),
-
-                // Username Input
                 TextField(
                   decoration: InputDecoration(
                     filled: true,
@@ -74,10 +68,8 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 15),
-
-                // Password Input
                 TextField(
-                  obscureText: !_isPasswordVisible, // Toggle visibility
+                  obscureText: !_isPasswordVisible,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.grey.shade300,
@@ -102,8 +94,6 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-
-                // Forgot Password
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
@@ -112,8 +102,6 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextStyle(color: Colors.white70)),
                   ),
                 ),
-
-                // Login Button (Gradient)
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -133,10 +121,7 @@ class _LoginPageState extends State<LoginPage> {
                             fontWeight: FontWeight.bold)),
                   ),
                 ),
-
                 const SizedBox(height: 20),
-
-                // Sign Up Text
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
