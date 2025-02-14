@@ -13,7 +13,7 @@ class WelcomePageState extends State<WelcomePage> {
   final List<String> images = [
     'assets/images/sust_audi.jpg',
     'assets/images/central_field2.jpg',
-    'assets/images/basketball_ground.jpg'
+    'assets/images/basketball_ground2.jpg'
   ];
   int _imageIndex = 0;
   String fullQuote = "SUST Spot Booking, Smart & Easy!";
@@ -51,7 +51,7 @@ class WelcomePageState extends State<WelcomePage> {
       backgroundColor: const Color.fromARGB(197, 21, 18, 24),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -60,7 +60,7 @@ class WelcomePageState extends State<WelcomePage> {
                 child: Image.asset(
                   images[_imageIndex],
                   key: ValueKey<String>(images[_imageIndex]),
-                  height: 220,
+                  height: 250,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
@@ -71,7 +71,7 @@ class WelcomePageState extends State<WelcomePage> {
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 17,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Urbanist'),
               ),

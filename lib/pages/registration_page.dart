@@ -25,7 +25,7 @@ class RegistrationPageState extends State<RegistrationPage> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(196, 232, 229, 232),
       appBar: const CustomAppBar(title: "SpotEase SUST", showBackButton: true),
-      resizeToAvoidBottomInset: true, 
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,

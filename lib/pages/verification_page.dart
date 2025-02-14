@@ -39,7 +39,8 @@ class VerificationPageState extends State<VerificationPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.mark_email_read, size: 80, color: Colors.white),
+                const Icon(Icons.mark_email_read,
+                    size: 80, color: Colors.white),
                 const SizedBox(height: 20),
                 const Text(
                   "You are almost there!",
@@ -61,7 +62,7 @@ class VerificationPageState extends State<VerificationPage> {
                   style: TextStyle(color: Colors.white70),
                 ),
                 Text(
-                  widget.email, 
+                  widget.email,
                   style: const TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold),
                 ),
