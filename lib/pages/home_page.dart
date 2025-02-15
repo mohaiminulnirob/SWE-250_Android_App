@@ -23,11 +23,11 @@ class HomePageState extends State<HomePage> {
   ];
 
   final List<String> _spotNames = [
-    "SUST Auditorium",
-    "SUST Central Field",
-    "SUST Basketball Ground",
-    "SUST Handball Ground",
-    "SUST Mini Auditorium",
+    "Auditorium",
+    "Central Field",
+    "Basketball Ground",
+    "Handball Ground",
+    "Mini Auditorium",
   ];
 
   final List<String> _eventNames = [

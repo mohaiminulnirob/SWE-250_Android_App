@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:project/pages/auditorium.dart';
+import 'package:project/pages/basketball_ground.dart';
+import 'package:project/pages/handball_ground.dart';
+import 'package:project/pages/mini_auditorium.dart';
+import 'package:project/pages/central_field.dart';
 
 class SpotList extends StatefulWidget {
   final List<String> spotImages;
@@ -46,6 +51,23 @@ class _SpotListState extends State<SpotList> {
     );
   }
 
+  Widget? _getSpotPage(String spotName) {
+    switch (spotName) {
+      case "Auditorium":
+        return const AuditoriumPage();
+      case "Central Field":
+        return const CentralFieldPage();
+      case "Basketball Ground":
+        return const BasketballGroundPage();
+      case "Handball Ground":
+        return const HandballGroundPage();
+      case "Mini Auditorium":
+        return const MiniAuditoriumPage();
+      default:
+        return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -59,7 +81,15 @@ class _SpotListState extends State<SpotList> {
             itemCount: widget.spotImages.length,
             itemBuilder: (context, index) {
               return GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Widget? page = _getSpotPage(widget.spotNames[index]);
+                  if (page != null) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => page),
+                    );
+                  }
+                },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: ClipRRect(
@@ -106,8 +136,7 @@ class _SpotListState extends State<SpotList> {
           Positioned(
             left: 0,
             child: IconButton(
-              icon: const Icon(Icons.arrow_back_ios,
-                  color: Color.fromARGB(231, 9, 9, 9)),
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
               onPressed: _scrollLeft,
             ),
           ),
@@ -115,8 +144,7 @@ class _SpotListState extends State<SpotList> {
           Positioned(
             right: 0,
             child: IconButton(
-              icon: const Icon(Icons.arrow_forward_ios,
-                  color: Color.fromARGB(231, 9, 9, 9)),
+              icon: const Icon(Icons.arrow_forward_ios, color: Colors.black),
               onPressed: _scrollRight,
             ),
           ),
