@@ -3,6 +3,7 @@ import 'package:project/widgets/custom_app_bar.dart';
 import 'package:project/widgets/spot_description.dart';
 import 'package:project/widgets/spot_location.dart';
 import 'package:project/widgets/spot_upcoming_events.dart';
+import 'package:project/widgets/availability_calender.dart';
 
 class AuditoriumPage extends StatefulWidget {
   const AuditoriumPage({super.key});
@@ -51,6 +52,11 @@ class _AuditoriumPageState extends State<AuditoriumPage> {
               ],
             ),
             const SizedBox(height: 10),
+
+            // Availability Calendar Button
+            const AvailabilityCalendar(),
+
+            // Description
             SpotDescription(
               title: "Description",
               content: const Padding(

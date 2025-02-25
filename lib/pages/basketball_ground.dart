@@ -3,6 +3,7 @@ import 'package:project/widgets/custom_app_bar.dart';
 import 'package:project/widgets/spot_description.dart';
 import 'package:project/widgets/spot_location.dart';
 import 'package:project/widgets/spot_upcoming_events.dart';
+import 'package:project/widgets/availability_calender.dart';
 
 class BasketballGroundPage extends StatefulWidget {
   const BasketballGroundPage({super.key});
@@ -51,6 +52,7 @@ class _BasketballGroundPageState extends State<BasketballGroundPage> {
               ],
             ),
             const SizedBox(height: 10),
+            const AvailabilityCalendar(),
             SpotDescription(
               title: "Description",
               content: const Padding(
