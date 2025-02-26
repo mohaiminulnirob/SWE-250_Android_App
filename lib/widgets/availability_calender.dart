@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:project/pages/booking_page.dart';
 
 class AvailabilityCalendar extends StatefulWidget {
-  const AvailabilityCalendar({super.key});
+  final String spotName;
+
+  const AvailabilityCalendar({super.key, required this.spotName});
 
   @override
   State<AvailabilityCalendar> createState() => _AvailabilityCalendarState();
@@ -29,6 +32,21 @@ class _AvailabilityCalendarState extends State<AvailabilityCalendar> {
 
   bool get _isProceedEnabled =>
       _selectedDay != null && _selectedSession != null;
+
+  void _navigateToBookingPage() {
+    if (_isProceedEnabled) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BookingPage(
+            spotName: widget.spotName,
+            selectedDate: _selectedDay!,
+            session: _selectedSession!,
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +75,7 @@ class _AvailabilityCalendarState extends State<AvailabilityCalendar> {
         ),
         AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          height: _isCalendarVisible ? 500 : 0,
+          height: _isCalendarVisible ? 450 : 0,
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -105,7 +123,6 @@ class _AvailabilityCalendarState extends State<AvailabilityCalendar> {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    const SizedBox(height: 3),
                     Expanded(
                       child: SizedBox(
                         height: 40,
@@ -135,7 +152,7 @@ class _AvailabilityCalendarState extends State<AvailabilityCalendar> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -144,25 +161,16 @@ class _AvailabilityCalendarState extends State<AvailabilityCalendar> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.red,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                       child: const Text("Cancel",
                           style: TextStyle(color: Colors.white)),
                     ),
                     const SizedBox(width: 18),
-                    const SizedBox(height: 3),
                     ElevatedButton(
-                      onPressed: _isProceedEnabled
-                          ? () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                      "Proceeding with Date: ${_selectedDay!.day}-${_selectedDay!.month}-${_selectedDay!.year}, Session: $_selectedSession"),
-                                ),
-                              );
-                            }
-                          : null,
+                      onPressed:
+                          _isProceedEnabled ? _navigateToBookingPage : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
                         shape: RoundedRectangleBorder(

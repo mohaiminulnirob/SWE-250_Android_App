@@ -52,7 +52,7 @@ class _BasketballGroundPageState extends State<BasketballGroundPage> {
               ],
             ),
             const SizedBox(height: 10),
-            const AvailabilityCalendar(),
+            const AvailabilityCalendar(spotName: ""),
             SpotDescription(
               title: "Description",
               content: const Padding(

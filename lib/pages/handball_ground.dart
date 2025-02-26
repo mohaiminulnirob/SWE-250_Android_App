@@ -52,7 +52,9 @@ class _HandballGroundPageState extends State<HandballGroundPage> {
               ],
             ),
             const SizedBox(height: 10),
-            const AvailabilityCalendar(),
+            const AvailabilityCalendar(
+              spotName: "Handball Ground",
+            ),
             SpotDescription(
               title: "Description",
               content: const Padding(

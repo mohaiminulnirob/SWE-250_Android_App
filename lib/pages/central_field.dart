@@ -52,7 +52,7 @@ class _CentralFieldPageState extends State<CentralFieldPage> {
               ],
             ),
             const SizedBox(height: 10),
-            const AvailabilityCalendar(),
+            const AvailabilityCalendar(spotName: "Central Field"),
             SpotDescription(
               title: "Description",
               content: const Padding(
