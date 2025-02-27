@@ -3,6 +3,7 @@ import 'package:project/widgets/bottom_nav_bar.dart';
 import 'package:project/widgets/custom_app_bar.dart';
 import 'package:project/widgets/spot_list.dart';
 import 'package:project/widgets/event_list.dart';
+import 'package:project/repository/event_repository.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,6 +14,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+  final EventRepository _eventRepository = EventRepository();
 
   final List<String> _spotImages = [
     'assets/images/sust_audi2.jpg',
@@ -28,14 +30,6 @@ class HomePageState extends State<HomePage> {
     "Basketball Ground",
     "Handball Ground",
     "Mini Auditorium",
-  ];
-
-  final List<String> _eventNames = [
-    "Cultural Fest 2025",
-    "Tech Carnival",
-    "Sports Championship",
-    "Coding Contest",
-    "Music Night"
   ];
 
   void _onItemTapped(int index) {
@@ -86,7 +80,7 @@ class HomePageState extends State<HomePage> {
               ),
             ),
             const SizedBox(height: 10),
-            EventList(eventNames: _eventNames),
+            EventList(events: _eventRepository.events),
           ],
         ),
       ),

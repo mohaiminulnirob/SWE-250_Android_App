@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:project/models/event_model.dart';
 
 class EventList extends StatefulWidget {
-  final List<String> eventNames;
+  final List<Event> events;
 
-  const EventList({super.key, required this.eventNames});
+  const EventList({super.key, required this.events});
 
   @override
   State<EventList> createState() => _EventListState();
@@ -13,10 +14,12 @@ class _EventListState extends State<EventList> {
   final ScrollController _scrollController = ScrollController();
   bool _showUpArrow = false;
   bool _showDownArrow = true;
+  late List<Event> _eventList;
 
   @override
   void initState() {
     super.initState();
+    _eventList = List.from(widget.events);
     _scrollController.addListener(_updateScrollArrows);
   }
 
@@ -53,8 +56,9 @@ class _EventListState extends State<EventList> {
           height: 300,
           child: ListView.builder(
             controller: _scrollController,
-            itemCount: widget.eventNames.length,
+            itemCount: _eventList.length,
             itemBuilder: (context, index) {
+              final event = _eventList[index];
               return Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -66,10 +70,13 @@ class _EventListState extends State<EventList> {
                   child: ListTile(
                     leading:
                         const Icon(Icons.event, color: Colors.purpleAccent),
-                    title: Text(widget.eventNames[index]),
-                    subtitle: const Text("Click to view details"),
+                    title: Text(event.title),
+                    subtitle:
+                        Text("${event.organizationName} • ${event.session}"),
                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onTap: () {},
+                    onTap: () {
+                      _showEventDetails(event);
+                    },
                   ),
                 ),
               );
@@ -95,6 +102,27 @@ class _EventListState extends State<EventList> {
             ),
           ),
       ],
+    );
+  }
+
+  void _showEventDetails(Event event) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(event.title),
+        content: Text(
+          "Organization: ${event.organizationName}\n"
+          "Date: ${event.date.day}-${event.date.month}-${event.date.year}\n"
+          "Session: ${event.session}\n\n"
+          "Description: ${event.description}",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Close"),
+          ),
+        ],
+      ),
     );
   }
 

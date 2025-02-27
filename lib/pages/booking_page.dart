@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project/widgets/custom_app_bar.dart';
+import 'package:project/models/event_model.dart';
+import 'package:project/repository/event_repository.dart';
 
 class BookingPage extends StatefulWidget {
   final String spotName;
@@ -29,10 +31,22 @@ class _BookingPageState extends State<BookingPage> {
   void _submitForm() {
     if (_formKey.currentState!.validate() && _acceptedTerms) {
       _formKey.currentState!.save();
+
+      // Create an Event object
+      final newEvent = Event(
+        title: _eventTitle!,
+        organizationName: _organizationName!,
+        date: widget.selectedDate,
+        session: widget.session,
+        description: _eventDescription!,
+      );
+      EventRepository().addEvent(newEvent);
+      // Send the event back to the previous screen
+      Navigator.pop(context, newEvent);
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Request Submitted Successfully!')),
       );
-      Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please complete the form.')),
@@ -53,10 +67,7 @@ class _BookingPageState extends State<BookingPage> {
             children: [
               const Text(
                 "Complete Your Booking Request",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 24),
               _buildReadOnlyField("Spot Name", widget.spotName),
