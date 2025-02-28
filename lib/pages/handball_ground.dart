@@ -4,6 +4,7 @@ import 'package:project/widgets/spot_description.dart';
 import 'package:project/widgets/spot_location.dart';
 import 'package:project/widgets/spot_upcoming_events.dart';
 import 'package:project/widgets/availability_calender.dart';
+import 'package:project/repository/spot_event_repository.dart';
 
 class HandballGroundPage extends StatefulWidget {
   const HandballGroundPage({super.key});
@@ -13,6 +14,7 @@ class HandballGroundPage extends StatefulWidget {
 }
 
 class _HandballGroundPageState extends State<HandballGroundPage> {
+  final SpotEventRepository spotEventRepository = SpotEventRepository();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,7 +68,9 @@ class _HandballGroundPageState extends State<HandballGroundPage> {
               ),
             ),
             const SpotLocation(),
-            const SpotUpcomingEvents(),
+            SpotUpcomingEvents(
+                events:
+                    spotEventRepository.getEventsForSpot("Handball Ground")),
           ],
         ),
       ),

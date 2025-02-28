@@ -1,4 +1,5 @@
 class Event {
+  final String spotName;
   final String title;
   final String organizationName;
   final DateTime date;
@@ -6,6 +7,7 @@ class Event {
   final String description;
 
   Event({
+    required this.spotName,
     required this.title,
     required this.organizationName,
     required this.date,

@@ -4,6 +4,7 @@ import 'package:project/widgets/spot_description.dart';
 import 'package:project/widgets/spot_location.dart';
 import 'package:project/widgets/spot_upcoming_events.dart';
 import 'package:project/widgets/availability_calender.dart';
+import 'package:project/repository/spot_event_repository.dart';
 
 class CentralFieldPage extends StatefulWidget {
   const CentralFieldPage({super.key});
@@ -13,6 +14,7 @@ class CentralFieldPage extends StatefulWidget {
 }
 
 class _CentralFieldPageState extends State<CentralFieldPage> {
+  final SpotEventRepository spotEventRepository = SpotEventRepository();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +66,8 @@ class _CentralFieldPageState extends State<CentralFieldPage> {
               ),
             ),
             const SpotLocation(),
-            const SpotUpcomingEvents(),
+            SpotUpcomingEvents(
+                events: spotEventRepository.getEventsForSpot("Central Field")),
           ],
         ),
       ),

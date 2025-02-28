@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project/widgets/custom_app_bar.dart';
 import 'package:project/models/event_model.dart';
 import 'package:project/repository/event_repository.dart';
+import 'package:project/repository/spot_event_repository.dart';
 
 class BookingPage extends StatefulWidget {
   final String spotName;
@@ -32,8 +33,8 @@ class _BookingPageState extends State<BookingPage> {
     if (_formKey.currentState!.validate() && _acceptedTerms) {
       _formKey.currentState!.save();
 
-      // Create an Event object
       final newEvent = Event(
+        spotName: widget.spotName,
         title: _eventTitle!,
         organizationName: _organizationName!,
         date: widget.selectedDate,
@@ -41,7 +42,8 @@ class _BookingPageState extends State<BookingPage> {
         description: _eventDescription!,
       );
       EventRepository().addEvent(newEvent);
-      // Send the event back to the previous screen
+      SpotEventRepository().addEvent(widget.spotName, newEvent);
+
       Navigator.pop(context, newEvent);
 
       ScaffoldMessenger.of(context).showSnackBar(

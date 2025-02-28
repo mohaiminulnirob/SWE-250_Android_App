@@ -5,6 +5,7 @@ import 'package:project/widgets/spot_location.dart';
 import 'package:project/widgets/spot_upcoming_events.dart';
 import 'package:project/widgets/availability_calender.dart';
 import 'package:project/pages/booking_page.dart';
+import 'package:project/repository/spot_event_repository.dart';
 
 class AuditoriumPage extends StatefulWidget {
   const AuditoriumPage({super.key});
@@ -14,12 +15,14 @@ class AuditoriumPage extends StatefulWidget {
 }
 
 class _AuditoriumPageState extends State<AuditoriumPage> {
+  final SpotEventRepository spotEventRepository = SpotEventRepository();
+
   void navigateToBookingPage(DateTime selectedDate, String session) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => BookingPage(
-          spotName: "SUST Auditorium",
+          spotName: "Auditorium",
           selectedDate: selectedDate,
           session: session,
         ),
@@ -67,7 +70,7 @@ class _AuditoriumPageState extends State<AuditoriumPage> {
             ),
             const SizedBox(height: 10),
             AvailabilityCalendar(
-              spotName: "SUST Auditorium",
+              spotName: "Auditorium",
             ),
             SpotDescription(
               title: "Description",
@@ -80,7 +83,9 @@ class _AuditoriumPageState extends State<AuditoriumPage> {
               ),
             ),
             const SpotLocation(),
-            const SpotUpcomingEvents(),
+            SpotUpcomingEvents(
+              events: SpotEventRepository().getEventsForSpot("Auditorium"),
+            ),
           ],
         ),
       ),
