@@ -1,13 +1,10 @@
 import 'package:project/models/event_model.dart';
 
 class SpotEventRepository {
-  // Singleton instance
   static final SpotEventRepository _instance = SpotEventRepository._internal();
 
-  // Factory constructor to return the same instance
   factory SpotEventRepository() => _instance;
 
-  // Private internal constructor
   SpotEventRepository._internal();
 
   final Map<String, List<Event>> _spotEvents = {};
