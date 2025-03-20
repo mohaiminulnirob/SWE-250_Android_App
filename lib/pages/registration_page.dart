@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:project/pages/verification_page.dart';
+import 'package:project/services/auth_service.dart';
 import 'package:project/widgets/custom_app_bar.dart';
 
 class RegistrationPage extends StatefulWidget {
@@ -19,19 +21,76 @@ class RegistrationPageState extends State<RegistrationPage> {
 
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
+  bool _isLoading = false;
+
+  final AuthService _authService = AuthService();
+
+  Future<void> _signUp() async {
+    String username = _usernameController.text.trim();
+    String email = _emailController.text.trim();
+    String registration = _registrationController.text.trim();
+    String password = _passwordController.text.trim();
+    String confirmPassword = _confirmPasswordController.text.trim();
+
+    if (username.isEmpty ||
+        email.isEmpty ||
+        registration.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
+      _showError("All fields are required!");
+      return;
+    }
+    if (password != confirmPassword) {
+      _showError("Passwords do not match!");
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      User? user = await _authService.signUpWithEmail(email, password);
+
+      if (user != null) {
+        await _authService.saveUserDataAfterVerification(
+            username, email, registration);
+        if (mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => VerificationPage(
+                username: username,
+                email: email,
+                registration: registration,
+                password: password,
+              ),
+            ),
+          );
+        }
+      } else {
+        _showError("Sign-up failed. Please try again.");
+      }
+    } catch (e) {
+      _showError(e.toString());
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(196, 232, 229, 232),
       appBar: const CustomAppBar(title: "SpotEase SUST", showBackButton: true),
-      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: const EdgeInsets.all(60.0),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
                 "Sign up",
@@ -54,71 +113,37 @@ class RegistrationPageState extends State<RegistrationPage> {
               _buildTextField("Password",
                   controller: _passwordController,
                   obscureText: !_isPasswordVisible,
-                  suffixIcon: IconButton(
-                    icon: Icon(_isPasswordVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off),
-                    onPressed: () {
-                      setState(() {
-                        _isPasswordVisible = !_isPasswordVisible;
-                      });
-                    },
-                  )),
+                  isPassword: true, toggleVisibility: () {
+                setState(() => _isPasswordVisible = !_isPasswordVisible);
+              }),
               const SizedBox(height: 10),
               _buildTextField("Confirm Password",
                   controller: _confirmPasswordController,
                   obscureText: !_isConfirmPasswordVisible,
-                  suffixIcon: IconButton(
-                    icon: Icon(_isConfirmPasswordVisible
-                        ? Icons.visibility
-                        : Icons.visibility_off),
-                    onPressed: () {
-                      setState(() {
-                        _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
-                      });
-                    },
-                  )),
+                  isPassword: true, toggleVisibility: () {
+                setState(() =>
+                    _isConfirmPasswordVisible = !_isConfirmPasswordVisible);
+              }),
               const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            VerificationPage(email: _emailController.text),
+              _isLoading
+                  ? const CircularProgressIndicator()
+                  : SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _signUp,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.purpleAccent,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30)),
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                        ),
+                        child: const Text("Sign Up",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold)),
                       ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purpleAccent,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30)),
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                  ),
-                  child: const Text("Sign Up",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold)),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Already have an account? "),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacementNamed(context, '/login');
-                    },
-                    child: const Text("Login",
-                        style: TextStyle(
-                            color: Colors.blue, fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              ),
+                    ),
             ],
           ),
         ),
@@ -127,9 +152,10 @@ class RegistrationPageState extends State<RegistrationPage> {
   }
 
   Widget _buildTextField(String hintText,
-      {bool obscureText = false,
-      TextEditingController? controller,
-      Widget? suffixIcon}) {
+      {TextEditingController? controller,
+      bool obscureText = false,
+      bool isPassword = false,
+      VoidCallback? toggleVisibility}) {
     return TextField(
       controller: controller,
       obscureText: obscureText,
@@ -137,11 +163,14 @@ class RegistrationPageState extends State<RegistrationPage> {
         filled: true,
         fillColor: Colors.white,
         hintText: hintText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.black45),
-        ),
-        suffixIcon: suffixIcon,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        suffixIcon: isPassword
+            ? IconButton(
+                icon:
+                    Icon(obscureText ? Icons.visibility : Icons.visibility_off),
+                onPressed: toggleVisibility,
+              )
+            : null,
       ),
     );
   }
