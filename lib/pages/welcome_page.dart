@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project/widgets/custom_app_bar.dart';
+import 'package:project/pages/login_page.dart';
 import 'dart:async';
 
 class WelcomePage extends StatefulWidget {
@@ -80,19 +81,26 @@ class WelcomePageState extends State<WelcomePage> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/login');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.yellow,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                     padding: const EdgeInsets.symmetric(vertical: 15),
                   ),
-                  child: const Text("Get Started",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold)),
+                  child: const Text(
+                    "Get Started",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 30),

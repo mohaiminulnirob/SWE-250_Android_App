@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project/widgets/custom_app_bar.dart';
+import 'package:project/services/auth_service.dart';
 
 class VerificationPage extends StatefulWidget {
   final String username;
@@ -23,15 +22,15 @@ class VerificationPage extends StatefulWidget {
 
 class VerificationPageState extends State<VerificationPage> {
   bool _isLoading = false;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final AuthService _authService = AuthService();
 
   Future<void> _checkVerification() async {
     setState(() => _isLoading = true);
 
-    await _auth.currentUser?.reload();
-    if (_auth.currentUser!.emailVerified) {
-      await _saveUserToFirestore();
+    bool isVerified = await _authService.isUserVerified();
+    if (isVerified) {
+      await _authService.saveUserToFirestore(
+          widget.username, widget.email, widget.registration);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -47,30 +46,6 @@ class VerificationPageState extends State<VerificationPage> {
             backgroundColor: Colors.red),
       );
     }
-
-    setState(() => _isLoading = false);
-  }
-
-  Future<void> _saveUserToFirestore() async {
-    await _firestore.collection("users").doc(_auth.currentUser!.uid).set({
-      "username": widget.username,
-      "email": widget.email,
-      "registration": widget.registration,
-      "uid": _auth.currentUser!.uid,
-      "createdAt": FieldValue.serverTimestamp(),
-    });
-  }
-
-  Future<void> _resendVerificationEmail() async {
-    setState(() => _isLoading = true);
-
-    await _auth.currentUser?.sendEmailVerification();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-          content: Text("Verification email resent!"),
-          backgroundColor: Colors.blue),
-    );
 
     setState(() => _isLoading = false);
   }
@@ -116,28 +91,52 @@ class VerificationPageState extends State<VerificationPage> {
                           child: ElevatedButton(
                             onPressed: _checkVerification,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
+                              backgroundColor:
+                                  const Color.fromARGB(255, 23, 203, 53),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12)),
                               padding: const EdgeInsets.symmetric(vertical: 14),
                             ),
-                            child: const Text("Verify",
-                                style: TextStyle(fontSize: 16)),
+                            child: const Text(
+                              "Verify",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Color.fromARGB(255, 2, 4, 15),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 15),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: _resendVerificationEmail,
+                            onPressed: () async {
+                              setState(() => _isLoading = true);
+                              await _authService.resendVerificationEmail();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Verification email resent!"),
+                                  backgroundColor: Colors.blue,
+                                ),
+                              );
+                              setState(() => _isLoading = false);
+                            },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blueAccent,
+                              backgroundColor:
+                                  const Color.fromARGB(255, 12, 114, 162),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12)),
                               padding: const EdgeInsets.symmetric(vertical: 14),
                             ),
-                            child: const Text("Resend Verification Email",
-                                style: TextStyle(fontSize: 16)),
+                            child: const Text(
+                              "Resend Verification Email",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Color.fromARGB(255, 2, 4, 15),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
                       ],

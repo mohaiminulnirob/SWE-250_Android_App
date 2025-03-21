@@ -40,6 +40,10 @@ class RegistrationPageState extends State<RegistrationPage> {
       _showError("All fields are required!");
       return;
     }
+    if (password.length < 8) {
+      _showError("Password must be at least 8 characters long!");
+      return;
+    }
     if (password != confirmPassword) {
       _showError("Passwords do not match!");
       return;
@@ -51,8 +55,6 @@ class RegistrationPageState extends State<RegistrationPage> {
       User? user = await _authService.signUpWithEmail(email, password);
 
       if (user != null) {
-        await _authService.saveUserDataAfterVerification(
-            username, email, registration);
         if (mounted) {
           Navigator.push(
             context,
@@ -167,7 +169,7 @@ class RegistrationPageState extends State<RegistrationPage> {
         suffixIcon: isPassword
             ? IconButton(
                 icon:
-                    Icon(obscureText ? Icons.visibility : Icons.visibility_off),
+                    Icon(obscureText ? Icons.visibility_off : Icons.visibility),
                 onPressed: toggleVisibility,
               )
             : null,

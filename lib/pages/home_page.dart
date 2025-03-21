@@ -56,7 +56,7 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: "SpotEase SUST", showBackButton: false),
+      appBar: const CustomAppBar(title: "SpotEase SUST", showBackButton: true),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
