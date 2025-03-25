@@ -67,6 +67,14 @@ class AuthService {
     }
   }
 
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      throw e;
+    }
+  }
+
   Future<void> resendVerificationEmail() async {
     await _auth.currentUser?.sendEmailVerification();
   }
