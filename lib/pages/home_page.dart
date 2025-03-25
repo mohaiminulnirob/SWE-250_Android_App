@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project/widgets/bottom_nav_bar.dart';
 import 'package:project/widgets/custom_app_bar.dart';
 import 'package:project/widgets/spot_list.dart';
 import 'package:project/widgets/event_list.dart';
 import 'package:project/repository/event_repository.dart';
+import 'package:project/pages/profile_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String uid;
+
+  const HomePage({super.key, required this.uid});
 
   @override
   HomePageState createState() => HomePageState();
@@ -15,6 +19,8 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   final EventRepository _eventRepository = EventRepository();
+  String _userName = "";
+  bool _isLoading = true;
 
   final List<String> _spotImages = [
     'assets/images/sust_audi2.jpg',
@@ -32,6 +38,38 @@ class HomePageState extends State<HomePage> {
     "Mini Auditorium",
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserName();
+  }
+
+  Future<void> _fetchUserName() async {
+    try {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.uid)
+          .get();
+
+      if (userDoc.exists) {
+        setState(() {
+          _userName = userDoc['username'];
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _userName = "User";
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _userName = "User";
+        _isLoading = false;
+      });
+    }
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -48,7 +86,13 @@ class HomePageState extends State<HomePage> {
         Navigator.pushReplacementNamed(context, '/notifications');
         break;
       case 3:
-        Navigator.pushReplacementNamed(context, '/profile');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProfilePage(uid: widget.uid),
+          ),
+        );
+
         break;
     }
   }
@@ -62,11 +106,25 @@ class HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: _isLoading
+                  ? const CircularProgressIndicator()
+                  : Text(
+                      "Welcome, $_userName!",
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 12, 50, 201),
+                      ),
+                    ),
+            ),
+            const SizedBox(height: 10),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
                 "Choose Your Preferred Spot",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(height: 10),
@@ -76,7 +134,7 @@ class HomePageState extends State<HomePage> {
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
                 "Upcoming Events",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(height: 10),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project/widgets/custom_app_bar.dart';
 import 'package:project/services/auth_service.dart';
+import 'package:project/services/profile_storage_service.dart';
 
 class VerificationPage extends StatefulWidget {
   final String username;
@@ -23,13 +24,14 @@ class VerificationPage extends StatefulWidget {
 class VerificationPageState extends State<VerificationPage> {
   bool _isLoading = false;
   final AuthService _authService = AuthService();
+  final ProfileStorageService _profileStorageService = ProfileStorageService();
 
   Future<void> _checkVerification() async {
     setState(() => _isLoading = true);
 
     bool isVerified = await _authService.isUserVerified();
     if (isVerified) {
-      await _authService.saveUserToFirestore(
+      await _profileStorageService.saveUserToFirestore(
           widget.username, widget.email, widget.registration);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
