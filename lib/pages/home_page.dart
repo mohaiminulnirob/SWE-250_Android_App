@@ -54,20 +54,21 @@ class HomePageState extends State<HomePage> {
       if (userDoc.exists) {
         setState(() {
           _userName = userDoc['username'];
-          _isLoading = false;
         });
       } else {
         setState(() {
           _userName = "User";
-          _isLoading = false;
         });
       }
     } catch (e) {
       setState(() {
         _userName = "User";
-        _isLoading = false;
       });
     }
+    await Future.delayed(const Duration(seconds: 1));
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   void _onItemTapped(int index) {
@@ -92,7 +93,6 @@ class HomePageState extends State<HomePage> {
             builder: (context) => ProfilePage(uid: widget.uid),
           ),
         );
-
         break;
     }
   }
@@ -101,50 +101,74 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: "SpotEase SUST", showBackButton: true),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: _isLoading
-                  ? const CircularProgressIndicator()
-                  : Text(
-                      "Welcome, $_userName!",
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 12, 50, 201),
-                      ),
-                    ),
-            ),
-            const SizedBox(height: 10),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                "Choose Your Preferred Spot",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const SizedBox(height: 10),
-            SpotList(spotImages: _spotImages, spotNames: _spotNames),
-            const SizedBox(height: 20),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                "Upcoming Events",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const SizedBox(height: 10),
-            EventList(events: _eventRepository.events),
-          ],
-        ),
-      ),
+      body: _isLoading ? _buildLoadingUI() : _buildHomeContent(),
       bottomNavigationBar: BottomNavBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+      ),
+    );
+  }
+
+  Widget _buildLoadingUI() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/images/loading_animation.gif',
+            width: 150,
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            "Fetching your profile...",
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueGrey),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHomeContent() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Text(
+              "Welcome, $_userName!",
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 12, 50, 201),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Text(
+              "Choose Your Preferred Spot",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(height: 10),
+          SpotList(spotImages: _spotImages, spotNames: _spotNames),
+          const SizedBox(height: 20),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Text(
+              "Upcoming Events",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(height: 10),
+          EventList(events: _eventRepository.events),
+        ],
       ),
     );
   }
