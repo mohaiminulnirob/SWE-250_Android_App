@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project/models/event_model.dart';
 
 class EventRepository {
@@ -5,59 +6,37 @@ class EventRepository {
   factory EventRepository() => _instance;
 
   EventRepository._internal() {
-    _initializeEvents();
+    _fetchEvents(); // Fetch events when the repository is initialized
   }
 
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final List<Event> _events = [];
 
-  List<Event> get events => List.unmodifiable(_events);
+  List<Event> get events =>
+      List.unmodifiable(_events); // Prevent external modification
 
-  void addEvent(Event event) {
-    _events.add(event);
+  Future<void> addEvent(Event event) async {
+    try {
+      await _firestore.collection('events').add(event.toMap());
+      _events.add(event); // Add to local list immediately
+    } catch (e) {
+      print("Error adding event: $e");
+    }
   }
 
-  void _initializeEvents() {
-    _events.addAll([
-      Event(
-        spotName: "Auditorium",
-        title: "Cultural Fest 2025",
-        organizationName: "Cultural Club",
-        date: DateTime(2025, 3, 10),
-        session: "Evening",
-        description: "A grand celebration of music, dance, and art.",
-      ),
-      Event(
-        spotName: "Mini Auditorium",
-        title: "Tech Carnival",
-        organizationName: "CSE Society",
-        date: DateTime(2025, 4, 15),
-        session: "Morning",
-        description: "Showcasing the latest in technology and innovation.",
-      ),
-      Event(
-        spotName: "Central Field",
-        title: "Sports Championship",
-        organizationName: "Sports Club",
-        date: DateTime(2025, 5, 20),
-        session: "Afternoon",
-        description: "Annual sports championship featuring multiple events.",
-      ),
-      Event(
-        spotName: "Mini Auditorium",
-        title: "Coding Contest",
-        organizationName: "Programming Hub",
-        date: DateTime(2025, 6, 5),
-        session: "Morning",
-        description: "A competitive coding contest with exciting prizes.",
-      ),
-      Event(
-        spotName: "Handball Ground",
-        title: "Music Night",
-        organizationName: "Music Club",
-        date: DateTime(2025, 7, 25),
-        session: "Evening",
-        description: "A night of musical performances and entertainment.",
-      ),
-    ]);
+  Future<void> _fetchEvents() async {
+    try {
+      QuerySnapshot snapshot = await _firestore.collection('events').get();
+      _events.clear(); // Clear local list before updating
+      _events.addAll(snapshot.docs.map((doc) {
+        return Event.fromMap(doc.data() as Map<String, dynamic>);
+      }));
+    } catch (e) {
+      print("Error fetching events: $e");
+    }
+  }
+
+  Future<void> refreshEvents() async {
+    await _fetchEvents();
   }
 }

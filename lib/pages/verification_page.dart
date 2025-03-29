@@ -39,7 +39,8 @@ class VerificationPageState extends State<VerificationPage> {
               content: Text("Email verified! You can now log in."),
               backgroundColor: Colors.green),
         );
-        Navigator.pushReplacementNamed(context, '/login');
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/welcome', (route) => false);
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
