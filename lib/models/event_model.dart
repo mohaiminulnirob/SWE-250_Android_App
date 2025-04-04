@@ -15,19 +15,17 @@ class Event {
     required this.description,
   });
 
-  // Convert Event object to a Map
   Map<String, dynamic> toMap() {
     return {
       'spotName': spotName,
       'title': title,
       'organizationName': organizationName,
-      'date': date.toIso8601String(), // Store date as ISO string
+      'date': date.toIso8601String(),
       'session': session,
       'description': description,
     };
   }
 
-  // Create Event object from a Map
   factory Event.fromMap(Map<String, dynamic> map) {
     return Event(
       spotName: map['spotName'] ?? '',

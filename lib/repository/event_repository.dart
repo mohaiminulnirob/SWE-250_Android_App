@@ -6,19 +6,17 @@ class EventRepository {
   factory EventRepository() => _instance;
 
   EventRepository._internal() {
-    _fetchEvents(); // Fetch events when the repository is initialized
+    _fetchEvents();
   }
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final List<Event> _events = [];
 
-  List<Event> get events =>
-      List.unmodifiable(_events); // Prevent external modification
-
+  List<Event> get events => List.unmodifiable(_events);
   Future<void> addEvent(Event event) async {
     try {
       await _firestore.collection('events').add(event.toMap());
-      _events.add(event); // Add to local list immediately
+      _events.add(event);
     } catch (e) {
       print("Error adding event: $e");
     }
@@ -27,7 +25,7 @@ class EventRepository {
   Future<void> _fetchEvents() async {
     try {
       QuerySnapshot snapshot = await _firestore.collection('events').get();
-      _events.clear(); // Clear local list before updating
+      _events.clear();
       _events.addAll(snapshot.docs.map((doc) {
         return Event.fromMap(doc.data() as Map<String, dynamic>);
       }));

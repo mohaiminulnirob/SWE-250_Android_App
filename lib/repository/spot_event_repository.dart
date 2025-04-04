@@ -1,19 +1,27 @@
 import 'package:project/models/event_model.dart';
+import 'package:project/repository/event_repository.dart';
 
 class SpotEventRepository {
   static final SpotEventRepository _instance = SpotEventRepository._internal();
-
   factory SpotEventRepository() => _instance;
 
-  SpotEventRepository._internal();
+  SpotEventRepository._internal() {
+    initializeFromEventRepository();
+  }
 
   final Map<String, List<Event>> _spotEvents = {};
 
-  void addEvent(String spotName, Event event) {
-    if (!_spotEvents.containsKey(spotName)) {
-      _spotEvents[spotName] = [];
+  void initializeFromEventRepository() {
+    _spotEvents.clear();
+    final events = EventRepository().events;
+
+    for (var event in events) {
+      final spotName = event.spotName;
+      if (!_spotEvents.containsKey(spotName)) {
+        _spotEvents[spotName] = [];
+      }
+      _spotEvents[spotName]!.add(event);
     }
-    _spotEvents[spotName]!.add(event);
   }
 
   List<Event> getEventsForSpot(String spotName) {

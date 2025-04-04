@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:project/repository/booked_dates_repository.dart';
+import 'package:project/repository/spot_booked_dates_repository.dart';
+import 'package:project/repository/spot_event_repository.dart';
 import 'package:project/widgets/custom_app_bar.dart';
 import 'package:project/models/event_model.dart';
+import 'package:project/models/booked_date_model.dart';
 import 'package:project/repository/event_repository.dart';
-import 'package:project/repository/spot_event_repository.dart';
 
 class BookingPage extends StatefulWidget {
   final String spotName;
@@ -29,7 +32,7 @@ class _BookingPageState extends State<BookingPage> {
   String? _eventDescription;
   bool _acceptedTerms = false;
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate() && _acceptedTerms) {
       _formKey.currentState!.save();
 
@@ -41,10 +44,19 @@ class _BookingPageState extends State<BookingPage> {
         session: widget.session,
         description: _eventDescription!,
       );
-      EventRepository().addEvent(newEvent);
-      SpotEventRepository().addEvent(widget.spotName, newEvent);
 
-      Navigator.pop(context, newEvent);
+      final newBookedDate = BookedDate(
+        spotName: widget.spotName,
+        date: widget.selectedDate,
+        session: widget.session,
+      );
+
+      await EventRepository().addEvent(newEvent);
+      await BookedDatesRepository().addBookedDate(newBookedDate);
+
+      await BookedDatesRepository().refreshBookedDates();
+      await SpotBookedDatesRepository().refresh();
+      await EventRepository().refreshEvents();
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Request Submitted Successfully!')),

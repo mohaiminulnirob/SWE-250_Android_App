@@ -15,7 +15,6 @@ class AuditoriumPage extends StatefulWidget {
 
 class _AuditoriumPageState extends State<AuditoriumPage> {
   final SpotEventRepository spotEventRepository = SpotEventRepository();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
