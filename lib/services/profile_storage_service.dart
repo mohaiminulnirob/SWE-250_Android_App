@@ -42,6 +42,24 @@ class ProfileStorageService {
     return null;
   }
 
+  Future<void> updateUsername(String newUsername) async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      await _firestore.collection("users").doc(user.uid).update({
+        "username": newUsername,
+      });
+    }
+  }
+
+  Future<void> updateRegistration(String newRegistration) async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      await _firestore.collection("users").doc(user.uid).update({
+        "registration": newRegistration,
+      });
+    }
+  }
+
   Future<String?> uploadProfilePicture() async {
     final ImagePicker picker = ImagePicker();
     final XFile? pickedFile =

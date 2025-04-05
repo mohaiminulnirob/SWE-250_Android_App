@@ -53,13 +53,98 @@ class _ProfilePageState extends State<ProfilePage> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Profile picture updated successfully!")),
+        const SnackBar(content: Text("Profile picture updated successfully!")),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to upload image")),
+        const SnackBar(content: Text("Failed to upload image")),
       );
     }
+  }
+
+  void _showEditProfileDialog() {
+    final TextEditingController usernameController =
+        TextEditingController(text: _username);
+    final TextEditingController regController =
+        TextEditingController(text: _registration);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          insetPadding:
+              const EdgeInsets.symmetric(horizontal: 30, vertical: 100),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 400),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('Edit Profile',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 20),
+                  TextField(
+                    controller: usernameController,
+                    decoration: const InputDecoration(labelText: 'Username'),
+                  ),
+                  TextField(
+                    controller: regController,
+                    decoration:
+                        const InputDecoration(labelText: 'Registration No'),
+                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      await _uploadProfilePicture();
+                    },
+                    icon: const Icon(Icons.upload),
+                    label: const Text('Update Profile Picture'),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Cancel'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          String newName = usernameController.text.trim();
+                          String newReg = regController.text.trim();
+
+                          if (newName.isNotEmpty && newName != _username) {
+                            await _profileStorageService
+                                .updateUsername(newName);
+                          }
+                          if (newReg.isNotEmpty && newReg != _registration) {
+                            await _profileStorageService
+                                .updateRegistration(newReg);
+                          }
+
+                          await _fetchUserData();
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Profile updated successfully!")),
+                          );
+                        },
+                        child: const Text('Save'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void _handleLogout() async {
@@ -108,30 +193,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     const SizedBox(height: 20),
                     _buildInfoTile("Registration No", _registration),
                     const SizedBox(height: 20),
-                    _buildActionButton(Icons.edit, "Edit Profile", () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //    // builder: (context) => const EditProfilePage(),
-                      //   ),
-                      // );
-                    }),
-                    _buildActionButton(Icons.lock, "Change Password", () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => const ChangePasswordPage(),
-                      //   ),
-                      // );
-                    }),
-                    _buildActionButton(Icons.settings, "Settings", () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => const SettingsPage(),
-                      //   ),
-                      // );
-                    }),
+                    _buildActionButton(
+                        Icons.edit, "Edit Profile", _showEditProfileDialog),
+                    _buildActionButton(Icons.lock, "Change Password", () {}),
+                    _buildActionButton(Icons.settings, "Settings", () {}),
                     const SizedBox(height: 30),
                     ElevatedButton.icon(
                       onPressed: _handleLogout,

@@ -99,6 +99,7 @@ class WelcomePageState extends State<WelcomePage> {
                       color: Colors.black,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
+                      fontFamily: 'Urbanist',
                     ),
                   ),
                 ),

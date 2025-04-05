@@ -1,5 +1,5 @@
 import 'package:project/models/event_model.dart';
-import 'package:project/repository/event_repository.dart';
+import 'package:project/repositories/event_repository.dart';
 
 class SpotEventRepository {
   static final SpotEventRepository _instance = SpotEventRepository._internal();
@@ -23,6 +23,10 @@ class SpotEventRepository {
       _spotEvents[spotName]!.add(event);
     }
   }
+
+  // Future<void> refresh() async {
+  //   initializeFromEventRepository();
+  // }
 
   List<Event> getEventsForSpot(String spotName) {
     return _spotEvents[spotName] ?? [];

@@ -68,10 +68,14 @@ class _LoginPageState extends State<LoginPage> {
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 22,
-                        fontWeight: FontWeight.bold)),
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Urbanist')),
                 const SizedBox(height: 5),
                 const Text("Login to explore",
-                    style: TextStyle(color: Colors.white70, fontSize: 16)),
+                    style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 16,
+                        fontFamily: 'Urbanist')),
                 const SizedBox(height: 30),
                 TextField(
                   controller: _emailController,
@@ -127,10 +131,10 @@ class _LoginPageState extends State<LoginPage> {
                         : const Text(
                             "Log In",
                             style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+                                color: Colors.black,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Urbanist'),
                           ),
                   ),
                 ),
@@ -147,8 +151,9 @@ class _LoginPageState extends State<LoginPage> {
                     "Forgot Password?",
                     style: TextStyle(
                       color: Colors.yellow,
-                      fontSize: 14,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
+                      fontFamily: 'Urbanist',
                     ),
                   ),
                 ),
@@ -157,7 +162,10 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Text("Don’t have an account?",
-                        style: TextStyle(color: Colors.white70)),
+                        style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 16,
+                            fontFamily: 'Urbanist')),
                     TextButton(
                       onPressed: () {
                         Navigator.push(
@@ -169,7 +177,9 @@ class _LoginPageState extends State<LoginPage> {
                       child: const Text("Sign Up",
                           style: TextStyle(
                               color: Colors.yellow,
-                              fontWeight: FontWeight.bold)),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              fontFamily: 'Urbanist')),
                     ),
                   ],
                 ),

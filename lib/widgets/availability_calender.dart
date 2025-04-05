@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:project/pages/booking_page.dart';
-import 'package:project/repository/spot_booked_dates_repository.dart';
+import 'package:project/repositories/spot_booked_dates_repository.dart';
 
 class AvailabilityCalendar extends StatefulWidget {
   final String spotName;

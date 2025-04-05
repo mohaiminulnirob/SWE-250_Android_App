@@ -1,5 +1,5 @@
 import 'package:project/models/booked_date_model.dart';
-import 'package:project/repository/booked_dates_repository.dart';
+import 'package:project/repositories/booked_dates_repository.dart';
 
 class SpotBookedDatesRepository {
   static final SpotBookedDatesRepository _instance =
@@ -12,7 +12,7 @@ class SpotBookedDatesRepository {
 
   Future<void> initializeFromBookedDatesRepository() async {
     _spotBookedDates.clear();
-    await BookedDatesRepository().init(); // 🔥 now we await actual fetch
+    await BookedDatesRepository().init();
     final bookedDates = BookedDatesRepository().bookedDates;
 
     for (var date in bookedDates) {

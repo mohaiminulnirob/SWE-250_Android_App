@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:project/repository/booked_dates_repository.dart';
-import 'package:project/repository/spot_booked_dates_repository.dart';
-import 'package:project/repository/spot_event_repository.dart';
+import 'package:project/repositories/booked_dates_repository.dart';
+import 'package:project/repositories/spot_booked_dates_repository.dart';
 import 'package:project/widgets/custom_app_bar.dart';
 import 'package:project/models/event_model.dart';
 import 'package:project/models/booked_date_model.dart';
-import 'package:project/repository/event_repository.dart';
+import 'package:project/repositories/event_repository.dart';
 
 class BookingPage extends StatefulWidget {
   final String spotName;

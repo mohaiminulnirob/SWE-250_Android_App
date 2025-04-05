@@ -4,7 +4,7 @@ import 'package:project/widgets/bottom_nav_bar.dart';
 import 'package:project/widgets/custom_app_bar.dart';
 import 'package:project/widgets/spot_list.dart';
 import 'package:project/widgets/event_list.dart';
-import 'package:project/repository/event_repository.dart';
+import 'package:project/repositories/event_repository.dart';
 import 'package:project/pages/profile_page.dart';
 
 class HomePage extends StatefulWidget {
