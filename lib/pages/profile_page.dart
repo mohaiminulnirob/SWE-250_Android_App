@@ -147,6 +147,107 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  void _showChangePasswordDialog() {
+    final currentPasswordController = TextEditingController();
+    final newPasswordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          insetPadding:
+              const EdgeInsets.symmetric(horizontal: 30, vertical: 100),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Change Password',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: currentPasswordController,
+                  obscureText: true,
+                  decoration:
+                      const InputDecoration(labelText: 'Current Password'),
+                ),
+                TextField(
+                  controller: newPasswordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(labelText: 'New Password'),
+                ),
+                TextField(
+                  controller: confirmPasswordController,
+                  obscureText: true,
+                  decoration:
+                      const InputDecoration(labelText: 'Confirm New Password'),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Cancel'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        final currentPassword =
+                            currentPasswordController.text.trim();
+                        final newPassword = newPasswordController.text.trim();
+                        final confirmPassword =
+                            confirmPasswordController.text.trim();
+
+                        if (newPassword != confirmPassword) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Passwords do not match.")),
+                          );
+                          return;
+                        }
+
+                        if (newPassword.length < 8) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text(
+                                    "New password must be at least 8 characters.")),
+                          );
+                          return;
+                        }
+
+                        try {
+                          await _authService.changePassword(
+                              currentPassword, newPassword);
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content:
+                                    Text("Password updated successfully!")),
+                          );
+                        } on FirebaseAuthException catch (e) {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Error: ${e.message}")),
+                          );
+                        }
+                      },
+                      child: const Text('Update'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void _handleLogout() async {
     await _authService.signOut();
     if (mounted) {
@@ -195,7 +296,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     const SizedBox(height: 20),
                     _buildActionButton(
                         Icons.edit, "Edit Profile", _showEditProfileDialog),
-                    _buildActionButton(Icons.lock, "Change Password", () {}),
+                    _buildActionButton(Icons.lock, "Change Password",
+                        _showChangePasswordDialog),
                     _buildActionButton(Icons.settings, "Settings", () {}),
                     const SizedBox(height: 30),
                     ElevatedButton.icon(

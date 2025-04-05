@@ -59,6 +59,25 @@ class AuthService {
     }
   }
 
+  Future<void> changePassword(
+      String currentPassword, String newPassword) async {
+    User? user = _auth.currentUser;
+
+    if (user != null && user.email != null) {
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: currentPassword,
+      );
+
+      try {
+        await user.reauthenticateWithCredential(credential);
+        await user.updatePassword(newPassword);
+      } on FirebaseAuthException catch (e) {
+        throw e;
+      }
+    }
+  }
+
   Future<void> resendVerificationEmail() async {
     await _auth.currentUser?.sendEmailVerification();
   }
