@@ -116,7 +116,7 @@ class HomePageState extends State<HomePage> {
         children: [
           Image.asset(
             'assets/images/loading_animation.gif',
-            width: 150,
+            width: 130,
           ),
           const SizedBox(height: 20),
           const Text(
@@ -124,6 +124,7 @@ class HomePageState extends State<HomePage> {
             style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                fontFamily: 'Urbanist',
                 color: Colors.blueGrey),
           ),
         ],
@@ -144,6 +145,7 @@ class HomePageState extends State<HomePage> {
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
+                fontFamily: 'Urbanist',
                 color: Color.fromARGB(255, 12, 50, 201),
               ),
             ),
@@ -153,17 +155,27 @@ class HomePageState extends State<HomePage> {
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: Text(
               "Choose Your Preferred Spot",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Urbanist'),
             ),
           ),
           const SizedBox(height: 10),
-          SpotList(spotImages: _spotImages, spotNames: _spotNames),
+          SpotList(
+            spotImages: _spotImages,
+            spotNames: _spotNames,
+            uid: widget.uid,
+          ),
           const SizedBox(height: 20),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: Text(
               "Upcoming Events",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Urbanist'),
             ),
           ),
           const SizedBox(height: 10),

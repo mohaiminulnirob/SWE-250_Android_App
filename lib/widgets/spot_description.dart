@@ -20,7 +20,8 @@ class _SpotDescriptionState extends State<SpotDescription> {
       children: [
         ListTile(
           title: Text(widget.title,
-              style: const TextStyle(fontWeight: FontWeight.bold)),
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold, fontFamily: 'Urbanist')),
           trailing: Icon(_isOpen ? Icons.expand_less : Icons.expand_more),
           onTap: () {
             setState(() {

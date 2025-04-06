@@ -7,7 +7,8 @@ import 'package:project/widgets/availability_calender.dart';
 import 'package:project/repositories/spot_event_repository.dart';
 
 class MiniAuditoriumPage extends StatefulWidget {
-  const MiniAuditoriumPage({super.key});
+  final String uid;
+  const MiniAuditoriumPage({super.key, required this.uid});
 
   @override
   State<MiniAuditoriumPage> createState() => _MiniAuditoriumPageState();
@@ -54,9 +55,7 @@ class _MiniAuditoriumPageState extends State<MiniAuditoriumPage> {
               ],
             ),
             const SizedBox(height: 10),
-            const AvailabilityCalendar(
-              spotName: "Mini Auditorium",
-            ),
+            AvailabilityCalendar(spotName: "Mini Auditorium", uid: widget.uid),
             SpotDescription(
               title: "Description",
               content: const Padding(

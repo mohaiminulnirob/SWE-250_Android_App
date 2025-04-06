@@ -99,11 +99,15 @@ class RegistrationPageState extends State<RegistrationPage> {
                 style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
+                    fontFamily: 'Urbanist',
                     color: Color.fromARGB(255, 104, 61, 222)),
               ),
               const SizedBox(height: 5),
               const Text("Create an account. It's free",
-                  style: TextStyle(color: Color.fromARGB(133, 33, 3, 69))),
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Color.fromARGB(133, 33, 3, 69),
+                      fontFamily: 'Urbanist')),
               const SizedBox(height: 20),
               _buildTextField("Username", controller: _usernameController),
               const SizedBox(height: 10),
@@ -142,6 +146,7 @@ class RegistrationPageState extends State<RegistrationPage> {
                         child: const Text("Sign Up",
                             style: TextStyle(
                                 color: Colors.white,
+                                fontFamily: 'Urbanist',
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold)),
                       ),

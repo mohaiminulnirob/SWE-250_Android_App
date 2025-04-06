@@ -73,7 +73,8 @@ class _SpotUpcomingEventsState extends State<SpotUpcomingEvents> {
       children: [
         ListTile(
           title: const Text("Upcoming Events",
-              style: TextStyle(fontWeight: FontWeight.bold)),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, fontFamily: 'Urbanist')),
           trailing: Icon(_isOpen ? Icons.expand_less : Icons.expand_more),
           onTap: () {
             setState(() {

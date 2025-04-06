@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 
-class ProfileStorageService {
+class StorageService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static const String _clientId = '730a82687c5c3ca';
@@ -41,6 +41,29 @@ class ProfileStorageService {
     }
     return null;
   }
+
+  // Future<void> sendConfirmationEmailToUser(String uid) async {
+  //   try {
+  //     DocumentSnapshot userDoc =
+  //         await _firestore.collection('users').doc(uid).get();
+  //     if (userDoc.exists) {
+  //       String email = userDoc['email'];
+  //       await _auth.sendSignInLinkToEmail(
+  //         email: email,
+  //         actionCodeSettings: ActionCodeSettings(
+  //           url: 'https://spot-booking-sust.web.app/',
+  //           handleCodeInApp: true,
+  //           androidPackageName: 'com.example.project',
+  //           androidInstallApp: true,
+  //           androidMinimumVersion: '12',
+  //           iOSBundleId: 'com.example.project',
+  //         ),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     print('Error sending confirmation email: $e');
+  //   }
+  // }
 
   Future<void> updateUsername(String newUsername) async {
     User? user = _auth.currentUser;
@@ -80,6 +103,25 @@ class ProfileStorageService {
         }
       } catch (e) {
         print("Failed to upload image: $e");
+      }
+    }
+    return null;
+  }
+
+  Future<String?> uploadApplicationImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile =
+        await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      File file = File(pickedFile.path);
+      try {
+        String? imageUrl = await _uploadToImgur(file);
+        if (imageUrl != null) {
+          return imageUrl;
+        }
+      } catch (e) {
+        print("Failed to upload application image: $e");
       }
     }
     return null;

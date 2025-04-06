@@ -5,8 +5,9 @@ import 'package:project/repositories/spot_booked_dates_repository.dart';
 
 class AvailabilityCalendar extends StatefulWidget {
   final String spotName;
-
-  const AvailabilityCalendar({super.key, required this.spotName});
+  final String uid;
+  const AvailabilityCalendar(
+      {super.key, required this.spotName, required this.uid});
 
   @override
   State<AvailabilityCalendar> createState() => _AvailabilityCalendarState();
@@ -81,6 +82,7 @@ class _AvailabilityCalendarState extends State<AvailabilityCalendar> {
         context,
         MaterialPageRoute(
           builder: (context) => BookingPage(
+            uid: widget.uid,
             spotName: widget.spotName,
             selectedDate: _selectedDay!,
             session: _selectedSession!,
@@ -116,10 +118,10 @@ class _AvailabilityCalendarState extends State<AvailabilityCalendar> {
                 child: const Text(
                   "Check Availability",
                   style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: 'Urbanist'),
                 ),
               ),
             ),
@@ -269,7 +271,9 @@ class _AvailabilityCalendarState extends State<AvailabilityCalendar> {
                                   ),
                                 ),
                                 child: const Text("Cancel",
-                                    style: TextStyle(color: Colors.white)),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'Urbanist')),
                               ),
                               const SizedBox(width: 18),
                               ElevatedButton(
@@ -283,7 +287,9 @@ class _AvailabilityCalendarState extends State<AvailabilityCalendar> {
                                   ),
                                 ),
                                 child: const Text("Proceed",
-                                    style: TextStyle(color: Colors.white)),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'Urbanist')),
                               ),
                             ],
                           ),

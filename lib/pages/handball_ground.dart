@@ -7,7 +7,8 @@ import 'package:project/widgets/availability_calender.dart';
 import 'package:project/repositories/spot_event_repository.dart';
 
 class HandballGroundPage extends StatefulWidget {
-  const HandballGroundPage({super.key});
+  final String uid;
+  const HandballGroundPage({super.key, required this.uid});
 
   @override
   State<HandballGroundPage> createState() => _HandballGroundPageState();
@@ -54,8 +55,9 @@ class _HandballGroundPageState extends State<HandballGroundPage> {
               ],
             ),
             const SizedBox(height: 10),
-            const AvailabilityCalendar(
+            AvailabilityCalendar(
               spotName: "Handball Ground",
+              uid: widget.uid,
             ),
             SpotDescription(
               title: "Description",

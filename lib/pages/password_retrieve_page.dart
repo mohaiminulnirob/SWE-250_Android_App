@@ -60,13 +60,17 @@ class PasswordRetrievePageState extends State<PasswordRetrievePage> {
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
+                  fontFamily: 'Urbanist',
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 8),
               const Text(
                 "Enter your email below to receive a password reset link.",
-                style: TextStyle(color: Colors.white70, fontSize: 16),
+                style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 16,
+                    fontFamily: 'Urbanist'),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
@@ -105,6 +109,7 @@ class PasswordRetrievePageState extends State<PasswordRetrievePage> {
                           style: TextStyle(
                             fontSize: 16,
                             color: Color.fromARGB(255, 2, 4, 15),
+                            fontFamily: 'Urbanist',
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -118,6 +123,7 @@ class PasswordRetrievePageState extends State<PasswordRetrievePage> {
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.blueAccent,
+                    fontFamily: 'Urbanist',
                     fontWeight: FontWeight.bold,
                   ),
                 ),

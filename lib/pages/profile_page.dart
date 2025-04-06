@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:project/services/profile_storage_service.dart';
+import 'package:project/services/storage_service.dart';
 import 'package:project/widgets/custom_app_bar.dart';
 import 'package:project/services/auth_service.dart';
 
@@ -16,7 +16,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final AuthService _authService = AuthService();
-  final ProfileStorageService _profileStorageService = ProfileStorageService();
+  final StorageService _profileStorageService = StorageService();
 
   User? _user;
   String _username = "";
@@ -84,8 +84,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Text('Edit Profile',
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Urbanist')),
                   const SizedBox(height: 20),
                   TextField(
                     controller: usernameController,
@@ -111,7 +113,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text('Cancel'),
+                        child: const Text(
+                          'Cancel',
+                          style: TextStyle(fontFamily: 'Urbanist'),
+                        ),
                       ),
                       ElevatedButton(
                         onPressed: () async {
@@ -134,7 +139,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                 content: Text("Profile updated successfully!")),
                           );
                         },
-                        child: const Text('Save'),
+                        child: const Text(
+                          'Save',
+                          style: TextStyle(fontFamily: 'Urbanist'),
+                        ),
                       ),
                     ],
                   ),
@@ -167,7 +175,10 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 const Text(
                   'Change Password',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Urbanist'),
                 ),
                 const SizedBox(height: 20),
                 TextField(
@@ -193,7 +204,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: const Text('Cancel'),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(fontFamily: 'Urbanist'),
+                      ),
                     ),
                     ElevatedButton(
                       onPressed: () async {
@@ -236,7 +250,10 @@ class _ProfilePageState extends State<ProfilePage> {
                           );
                         }
                       },
-                      child: const Text('Update'),
+                      child: const Text(
+                        'Update',
+                        style: TextStyle(fontFamily: 'Urbanist'),
+                      ),
                     ),
                   ],
                 ),
@@ -284,12 +301,18 @@ class _ProfilePageState extends State<ProfilePage> {
                     Text(
                       _username,
                       style: const TextStyle(
-                          fontSize: 22, fontWeight: FontWeight.bold),
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Urbanist'),
                     ),
                     const SizedBox(height: 5),
                     Text(
                       _email,
-                      style: const TextStyle(fontSize: 16, color: Colors.grey),
+                      style: const TextStyle(
+                          fontSize: 16,
+                          color: Color.fromARGB(255, 118, 115, 115),
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Urbanist'),
                     ),
                     const SizedBox(height: 20),
                     _buildInfoTile("Registration No", _registration),
@@ -305,7 +328,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       icon: const Icon(Icons.logout, color: Colors.white),
                       label: const Text(
                         "Logout",
-                        style: TextStyle(fontSize: 16, color: Colors.white),
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontFamily: 'Urbanist'),
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.redAccent,
@@ -340,11 +366,13 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: const TextStyle(fontSize: 16)),
+          Text(title,
+              style: const TextStyle(fontSize: 16, fontFamily: 'Urbanist')),
           Text(value,
               style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'Urbanist',
                   color: Colors.blueGrey)),
         ],
       ),
@@ -354,7 +382,8 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _buildActionButton(IconData icon, String label, VoidCallback onTap) {
     return ListTile(
       leading: Icon(icon, color: Colors.blue),
-      title: Text(label, style: const TextStyle(fontSize: 16)),
+      title: Text(label,
+          style: const TextStyle(fontSize: 16, fontFamily: 'Urbanist')),
       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
       onTap: onTap,
       shape: RoundedRectangleBorder(

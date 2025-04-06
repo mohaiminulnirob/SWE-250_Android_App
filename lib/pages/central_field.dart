@@ -7,7 +7,8 @@ import 'package:project/widgets/availability_calender.dart';
 import 'package:project/repositories/spot_event_repository.dart';
 
 class CentralFieldPage extends StatefulWidget {
-  const CentralFieldPage({super.key});
+  final String uid;
+  const CentralFieldPage({super.key, required this.uid});
 
   @override
   State<CentralFieldPage> createState() => _CentralFieldPageState();
@@ -54,7 +55,7 @@ class _CentralFieldPageState extends State<CentralFieldPage> {
               ],
             ),
             const SizedBox(height: 10),
-            const AvailabilityCalendar(spotName: "Central Field"),
+            AvailabilityCalendar(spotName: "Central Field", uid: widget.uid),
             SpotDescription(
               title: "Description",
               content: const Padding(

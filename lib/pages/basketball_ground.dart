@@ -7,7 +7,8 @@ import 'package:project/widgets/availability_calender.dart';
 import 'package:project/repositories/spot_event_repository.dart';
 
 class BasketballGroundPage extends StatefulWidget {
-  const BasketballGroundPage({super.key});
+  final String uid;
+  const BasketballGroundPage({super.key, required this.uid});
 
   @override
   State<BasketballGroundPage> createState() => _BasketballGroundPageState();
@@ -54,7 +55,8 @@ class _BasketballGroundPageState extends State<BasketballGroundPage> {
               ],
             ),
             const SizedBox(height: 10),
-            const AvailabilityCalendar(spotName: ""),
+            AvailabilityCalendar(
+                spotName: "Basketball Ground", uid: widget.uid),
             SpotDescription(
               title: "Description",
               content: const Padding(

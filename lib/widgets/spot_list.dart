@@ -6,11 +6,15 @@ import 'package:project/pages/mini_auditorium.dart';
 import 'package:project/pages/central_field.dart';
 
 class SpotList extends StatefulWidget {
+  final String uid;
   final List<String> spotImages;
   final List<String> spotNames;
 
   const SpotList(
-      {super.key, required this.spotImages, required this.spotNames});
+      {super.key,
+      required this.spotImages,
+      required this.spotNames,
+      required this.uid});
 
   @override
   State<SpotList> createState() => _SpotListState();
@@ -54,15 +58,15 @@ class _SpotListState extends State<SpotList> {
   Widget? _getSpotPage(String spotName) {
     switch (spotName) {
       case "Auditorium":
-        return const AuditoriumPage();
+        return AuditoriumPage(uid: widget.uid);
       case "Central Field":
-        return const CentralFieldPage();
+        return CentralFieldPage(uid: widget.uid);
       case "Basketball Ground":
-        return const BasketballGroundPage();
+        return BasketballGroundPage(uid: widget.uid);
       case "Handball Ground":
-        return const HandballGroundPage();
+        return HandballGroundPage(uid: widget.uid);
       case "Mini Auditorium":
-        return const MiniAuditoriumPage();
+        return MiniAuditoriumPage(uid: widget.uid);
       default:
         return null;
     }
@@ -116,10 +120,10 @@ class _SpotListState extends State<SpotList> {
                             child: Text(
                               widget.spotNames[index],
                               style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Urbanist'),
                               textAlign: TextAlign.center,
                             ),
                           ),

@@ -16,7 +16,8 @@ class _SpotLocationState extends State<SpotLocation> {
       children: [
         ListTile(
           title: const Text("Location",
-              style: TextStyle(fontWeight: FontWeight.bold)),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, fontFamily: 'Urbanist')),
           trailing: Icon(_isOpen ? Icons.expand_less : Icons.expand_more),
           onTap: () {
             setState(() {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project/widgets/custom_app_bar.dart';
 import 'package:project/services/auth_service.dart';
-import 'package:project/services/profile_storage_service.dart';
+import 'package:project/services/storage_service.dart';
 
 class VerificationPage extends StatefulWidget {
   final String username;
@@ -24,7 +24,7 @@ class VerificationPage extends StatefulWidget {
 class VerificationPageState extends State<VerificationPage> {
   bool _isLoading = false;
   final AuthService _authService = AuthService();
-  final ProfileStorageService _profileStorageService = ProfileStorageService();
+  final StorageService _profileStorageService = StorageService();
 
   Future<void> _checkVerification() async {
     setState(() => _isLoading = true);
@@ -73,6 +73,7 @@ class VerificationPageState extends State<VerificationPage> {
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
+                    fontFamily: 'Urbanist',
                     fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
@@ -81,6 +82,7 @@ class VerificationPageState extends State<VerificationPage> {
                 style: const TextStyle(
                     color: Colors.white70,
                     fontSize: 16,
+                    fontFamily: 'Urbanist',
                     fontWeight: FontWeight.w500),
                 textAlign: TextAlign.center,
               ),
@@ -105,6 +107,7 @@ class VerificationPageState extends State<VerificationPage> {
                               style: TextStyle(
                                 fontSize: 18,
                                 color: Color.fromARGB(255, 2, 4, 15),
+                                fontFamily: 'Urbanist',
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -137,6 +140,7 @@ class VerificationPageState extends State<VerificationPage> {
                               style: TextStyle(
                                 fontSize: 18,
                                 color: Color.fromARGB(255, 2, 4, 15),
+                                fontFamily: 'Urbanist',
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
