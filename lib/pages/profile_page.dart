@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:project/pages/user_booking_history.dart';
 import 'package:project/services/storage_service.dart';
 import 'package:project/widgets/custom_app_bar.dart';
 import 'package:project/services/auth_service.dart';
@@ -321,7 +322,15 @@ class _ProfilePageState extends State<ProfilePage> {
                         Icons.edit, "Edit Profile", _showEditProfileDialog),
                     _buildActionButton(Icons.lock, "Change Password",
                         _showChangePasswordDialog),
-                    _buildActionButton(Icons.settings, "Settings", () {}),
+                    _buildActionButton(Icons.history, "Booking History", () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              UserBookingHistoryPage(uid: widget.uid),
+                        ),
+                      );
+                    }),
                     const SizedBox(height: 30),
                     ElevatedButton.icon(
                       onPressed: _handleLogout,
