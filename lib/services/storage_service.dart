@@ -42,29 +42,6 @@ class StorageService {
     return null;
   }
 
-  // Future<void> sendConfirmationEmailToUser(String uid) async {
-  //   try {
-  //     DocumentSnapshot userDoc =
-  //         await _firestore.collection('users').doc(uid).get();
-  //     if (userDoc.exists) {
-  //       String email = userDoc['email'];
-  //       await _auth.sendSignInLinkToEmail(
-  //         email: email,
-  //         actionCodeSettings: ActionCodeSettings(
-  //           url: 'https://spot-booking-sust.web.app/',
-  //           handleCodeInApp: true,
-  //           androidPackageName: 'com.example.project',
-  //           androidInstallApp: true,
-  //           androidMinimumVersion: '12',
-  //           iOSBundleId: 'com.example.project',
-  //         ),
-  //       );
-  //     }
-  //   } catch (e) {
-  //     print('Error sending confirmation email: $e');
-  //   }
-  // }
-
   Future<void> updateUsername(String newUsername) async {
     User? user = _auth.currentUser;
     if (user != null) {

@@ -6,6 +6,7 @@ import 'package:project/models/event_model.dart';
 import 'package:project/models/booked_date_model.dart';
 import 'package:project/repositories/event_repository.dart';
 import 'package:project/services/storage_service.dart';
+import 'package:project/services/notification_service.dart';
 
 class BookingPage extends StatefulWidget {
   final String uid;
@@ -35,6 +36,7 @@ class _BookingPageState extends State<BookingPage> {
   String _applicationImageUrl = "";
   bool _acceptedTerms = false;
   final StorageService _profileStorageService = StorageService();
+  final NotificationService _notificationService = NotificationService();
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate() &&
@@ -65,7 +67,17 @@ class _BookingPageState extends State<BookingPage> {
       await BookedDatesRepository().refreshBookedDates();
       await SpotBookedDatesRepository().refresh();
       await EventRepository().refreshEvents();
-      //await StorageService().sendConfirmationEmailToUser(widget.uid);
+      final userData = await _profileStorageService.fetchUserData();
+      if (userData != null) {
+        await _notificationService.sendBookingConfirmationEmail(
+          toEmail: userData['email'],
+          username: userData['username'],
+          spotName: widget.spotName,
+          date:
+              "${widget.selectedDate.day}-${widget.selectedDate.month}-${widget.selectedDate.year}",
+          session: widget.session,
+        );
+      }
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Request Submitted Successfully!')),
