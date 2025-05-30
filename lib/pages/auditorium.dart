@@ -45,10 +45,10 @@ class _AuditoriumPageState extends State<AuditoriumPage> {
                     child: const Text(
                       "Auditorium",
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Urbanist'),
                     ),
                   ),
                 ),
@@ -69,7 +69,7 @@ class _AuditoriumPageState extends State<AuditoriumPage> {
                 ),
               ),
             ),
-            const SpotLocation(),
+            const SpotLocation(spotName: 'Auditorium'),
             SpotUpcomingEvents(
               events: SpotEventRepository().getEventsForSpot("Auditorium"),
             ),

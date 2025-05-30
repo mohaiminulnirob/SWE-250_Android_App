@@ -45,10 +45,10 @@ class _BasketballGroundPageState extends State<BasketballGroundPage> {
                     child: const Text(
                       "Basketball Ground",
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Urbanist'),
                     ),
                   ),
                 ),
@@ -67,7 +67,7 @@ class _BasketballGroundPageState extends State<BasketballGroundPage> {
                 ),
               ),
             ),
-            const SpotLocation(),
+            const SpotLocation(spotName: 'Basketball Ground'),
             SpotUpcomingEvents(
                 events:
                     spotEventRepository.getEventsForSpot("Basketball Ground")),

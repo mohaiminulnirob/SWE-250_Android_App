@@ -45,10 +45,10 @@ class _HandballGroundPageState extends State<HandballGroundPage> {
                     child: const Text(
                       "Handball Ground",
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Urbanist'),
                     ),
                   ),
                 ),
@@ -69,7 +69,7 @@ class _HandballGroundPageState extends State<HandballGroundPage> {
                 ),
               ),
             ),
-            const SpotLocation(),
+            const SpotLocation(spotName: 'Handball Ground'),
             SpotUpcomingEvents(
                 events:
                     spotEventRepository.getEventsForSpot("Handball Ground")),

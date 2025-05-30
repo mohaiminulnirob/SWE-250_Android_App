@@ -45,10 +45,10 @@ class _CentralFieldPageState extends State<CentralFieldPage> {
                     child: const Text(
                       "Central Field",
                       style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Urbanist'),
                     ),
                   ),
                 ),
@@ -66,7 +66,7 @@ class _CentralFieldPageState extends State<CentralFieldPage> {
                 ),
               ),
             ),
-            const SpotLocation(),
+            const SpotLocation(spotName: 'Central Field'),
             SpotUpcomingEvents(
                 events: spotEventRepository.getEventsForSpot("Central Field")),
           ],
