@@ -183,6 +183,49 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 30),
+                const Divider(color: Colors.white54),
+                const SizedBox(height: 10),
+                const Text("Admin Access",
+                    style: TextStyle(
+                        color: Colors.white70,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Urbanist')),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    OutlinedButton.icon(
+                      icon: const Icon(Icons.admin_panel_settings,
+                          color: Colors.white),
+                      label: const Text("Admin Login",
+                          style: TextStyle(
+                              color: Colors.white, fontFamily: 'Urbanist')),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Colors.white),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 20),
+                      ),
+                      onPressed: () {},
+                    ),
+                    const SizedBox(width: 15),
+                    OutlinedButton.icon(
+                      icon: const Icon(Icons.person_add_alt_1,
+                          color: Colors.white),
+                      label: const Text("Admin Sign Up",
+                          style: TextStyle(
+                              color: Colors.white, fontFamily: 'Urbanist')),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Colors.white),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 20),
+                      ),
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
               ],
             ),
           ),
