@@ -128,4 +128,37 @@ class StorageService {
       return null;
     }
   }
+
+  Future<void> addAdminInfo(
+      String uid, String name, String id, String email) async {
+    try {
+      await _firestore.collection('admin').doc(uid).set({
+        'uid': uid,
+        'name': name,
+        'id': id,
+        'email': email,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      throw Exception('Failed to add admin info: $e');
+    }
+  }
+
+  Future<bool> isAdminIdValid(String adminId) async {
+    final snapshot = await _firestore
+        .collection('adminID')
+        .where('id', isEqualTo: adminId)
+        .get();
+
+    return snapshot.docs.isNotEmpty;
+  }
+
+  Future<bool> isAdminIdAlreadyUsed(String adminId) async {
+    final snapshot = await _firestore
+        .collection('admin')
+        .where('id', isEqualTo: adminId)
+        .get();
+
+    return snapshot.docs.isNotEmpty;
+  }
 }

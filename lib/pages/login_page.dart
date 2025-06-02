@@ -5,6 +5,8 @@ import 'package:project/services/auth_service.dart';
 import 'package:project/pages/registration_page.dart';
 import 'package:project/pages/home_page.dart';
 import 'package:project/pages/password_retrieve_page.dart';
+import 'package:project/pages/admin_registration.dart';
+import 'package:project/pages/admin_login.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -207,7 +209,13 @@ class _LoginPageState extends State<LoginPage> {
                         padding: const EdgeInsets.symmetric(
                             vertical: 12, horizontal: 20),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AdminLoginPage()),
+                        );
+                      },
                     ),
                     const SizedBox(width: 15),
                     OutlinedButton.icon(
@@ -221,7 +229,14 @@ class _LoginPageState extends State<LoginPage> {
                         padding: const EdgeInsets.symmetric(
                             vertical: 12, horizontal: 20),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const AdminRegistrationPage()),
+                        );
+                      },
                     ),
                   ],
                 ),
