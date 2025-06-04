@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:project/pages/booking_approval.dart';
 import 'package:project/widgets/custom_app_bar.dart';
 
 class AdminHomePage extends StatelessWidget {
@@ -10,61 +11,6 @@ class AdminHomePage extends StatelessWidget {
       SnackBar(
         content: Text('Navigating to $sectionName...'),
         duration: const Duration(seconds: 2),
-      ),
-    );
-  }
-
-  Widget _buildCard({
-    required IconData icon,
-    required String title,
-    required List<Color> gradientColors,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: gradientColors,
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: gradientColors.last.withOpacity(0.4),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Container(
-          width: 150,
-          height: 150,
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                backgroundColor: Colors.white.withOpacity(0.2),
-                radius: 28,
-                child: Icon(icon, size: 30, color: Colors.white),
-              ),
-              const SizedBox(height: 15),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Urbanist',
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -83,13 +29,17 @@ class AdminHomePage extends StatelessWidget {
           crossAxisCount: 2,
           childAspectRatio: 0.9,
           children: [
-            _buildCard(
+            HoverCard(
               icon: LucideIcons.badgeCheck,
               title: 'Booking\nApproval',
               gradientColors: [Colors.green.shade400, Colors.green.shade700],
-              onTap: () => _navigateToSection(context, 'Booking Approval'),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const BookingApprovalPage()),
+              ),
             ),
-            _buildCard(
+            HoverCard(
               icon: LucideIcons.mapPin,
               title: 'Spot\nManagement',
               gradientColors: [
@@ -98,7 +48,7 @@ class AdminHomePage extends StatelessWidget {
               ],
               onTap: () => _navigateToSection(context, 'Spot Management'),
             ),
-            _buildCard(
+            HoverCard(
               icon: LucideIcons.calendarDays,
               title: 'Event\nManagement',
               gradientColors: [
@@ -107,7 +57,7 @@ class AdminHomePage extends StatelessWidget {
               ],
               onTap: () => _navigateToSection(context, 'Event Management'),
             ),
-            _buildCard(
+            HoverCard(
               icon: LucideIcons.bell,
               title: 'Notification\nManagement',
               gradientColors: [Colors.blue.shade400, Colors.indigo.shade700],
@@ -115,6 +65,85 @@ class AdminHomePage extends StatelessWidget {
                   _navigateToSection(context, 'Notification Management'),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class HoverCard extends StatefulWidget {
+  final IconData icon;
+  final String title;
+  final List<Color> gradientColors;
+  final VoidCallback onTap;
+
+  const HoverCard({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.gradientColors,
+    required this.onTap,
+  });
+
+  @override
+  State<HoverCard> createState() => _HoverCardState();
+}
+
+class _HoverCardState extends State<HoverCard> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedScale(
+          scale: _isHovered ? 1.05 : 1.0,
+          duration: const Duration(milliseconds: 200),
+          child: Container(
+            margin: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: widget.gradientColors,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: widget.gradientColors.last.withOpacity(0.4),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            width: 150,
+            height: 150,
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  backgroundColor: Colors.white.withOpacity(0.2),
+                  radius: 28,
+                  child: Icon(widget.icon, size: 30, color: Colors.white),
+                ),
+                const SizedBox(height: 15),
+                Text(
+                  widget.title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Urbanist',
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

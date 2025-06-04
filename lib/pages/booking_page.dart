@@ -5,6 +5,7 @@ import 'package:project/widgets/custom_app_bar.dart';
 import 'package:project/models/event_model.dart';
 import 'package:project/models/booked_date_model.dart';
 import 'package:project/repositories/event_repository.dart';
+import 'package:project/repositories/event_requests_repo.dart';
 import 'package:project/services/storage_service.dart';
 import 'package:project/services/notification_service.dart';
 
@@ -61,7 +62,7 @@ class _BookingPageState extends State<BookingPage> {
         session: widget.session,
       );
 
-      await EventRepository().addEvent(newEvent);
+      await EventRequestsRepository().addEventRequest(newEvent);
       await BookedDatesRepository().addBookedDate(newBookedDate);
 
       await BookedDatesRepository().refreshBookedDates();

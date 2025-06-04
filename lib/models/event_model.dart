@@ -1,4 +1,5 @@
 class Event {
+  String? id;
   final String uid;
   final String spotName;
   final String title;
@@ -9,6 +10,7 @@ class Event {
   final String applicationImageUrl;
 
   Event({
+    this.id,
     required this.uid,
     required this.spotName,
     required this.title,
@@ -32,8 +34,9 @@ class Event {
     };
   }
 
-  factory Event.fromMap(Map<String, dynamic> map) {
+  factory Event.fromMap(Map<String, dynamic> map, {String? id}) {
     return Event(
+      id: id,
       uid: map['uid'] ?? '',
       spotName: map['spotName'] ?? '',
       title: map['title'] ?? '',

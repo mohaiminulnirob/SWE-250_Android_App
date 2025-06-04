@@ -29,7 +29,6 @@ class _UserBookingHistoryPageState extends State<UserBookingHistoryPage> {
   }
 
   void _deleteEvent(Event event) {
-    // You can add Firestore deletion logic here if needed.
     setState(() {
       EventRepository().events.remove(event);
       _userEventsFuture = _loadUserEvents();
@@ -40,9 +39,79 @@ class _UserBookingHistoryPageState extends State<UserBookingHistoryPage> {
   }
 
   void _editEvent(Event event) {
-    // Navigate to edit page or show a dialog
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Edit request tapped.")),
+    final titleController = TextEditingController(text: event.title);
+    final descriptionController =
+        TextEditingController(text: event.description);
+    final organizationController =
+        TextEditingController(text: event.organizationName);
+    final sessionController = TextEditingController(text: event.session);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Edit Booking Request"),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: titleController,
+                  decoration: const InputDecoration(labelText: 'Event Title'),
+                ),
+                TextField(
+                  controller: descriptionController,
+                  decoration: const InputDecoration(labelText: 'Description'),
+                ),
+                TextField(
+                  controller: organizationController,
+                  decoration:
+                      const InputDecoration(labelText: 'Organization Name'),
+                ),
+                TextField(
+                  controller: sessionController,
+                  decoration: const InputDecoration(labelText: 'Session'),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final updatedEvent = Event(
+                  id: event.id,
+                  uid: event.uid,
+                  spotName: event.spotName,
+                  title: titleController.text,
+                  organizationName: organizationController.text,
+                  date: event.date,
+                  session: sessionController.text,
+                  description: descriptionController.text,
+                  applicationImageUrl: event.applicationImageUrl,
+                );
+
+                await EventRepository().updateEvent(updatedEvent);
+
+                Navigator.of(context).pop();
+
+                setState(() {
+                  _userEventsFuture = _loadUserEvents();
+                });
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text("Booking updated successfully.")),
+                );
+              },
+              child: const Text("Update"),
+            ),
+          ],
+        );
+      },
     );
   }
 
