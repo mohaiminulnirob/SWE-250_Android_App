@@ -53,24 +53,34 @@ class _UserBookingHistoryPageState extends State<UserBookingHistoryPage> {
           title: const Text("Edit Booking Request"),
           content: SingleChildScrollView(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
                   controller: titleController,
-                  decoration: const InputDecoration(labelText: 'Event Title'),
+                  decoration: const InputDecoration(
+                    labelText: 'Event Title',
+                    labelStyle: TextStyle(fontFamily: 'Urbanist'),
+                  ),
                 ),
                 TextField(
                   controller: descriptionController,
-                  decoration: const InputDecoration(labelText: 'Description'),
+                  decoration: const InputDecoration(
+                    labelText: 'Description',
+                    labelStyle: TextStyle(fontFamily: 'Urbanist'),
+                  ),
                 ),
                 TextField(
                   controller: organizationController,
-                  decoration:
-                      const InputDecoration(labelText: 'Organization Name'),
+                  decoration: const InputDecoration(
+                    labelText: 'Organization Name',
+                    labelStyle: TextStyle(fontFamily: 'Urbanist'),
+                  ),
                 ),
                 TextField(
                   controller: sessionController,
-                  decoration: const InputDecoration(labelText: 'Session'),
+                  decoration: const InputDecoration(
+                    labelText: 'Session',
+                    labelStyle: TextStyle(fontFamily: 'Urbanist'),
+                  ),
                 ),
               ],
             ),
@@ -166,7 +176,8 @@ class _UserBookingHistoryPageState extends State<UserBookingHistoryPage> {
                                 contentPadding: EdgeInsets.zero,
                                 title: Text(event.title,
                                     style: const TextStyle(
-                                        fontWeight: FontWeight.bold)),
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Urbanist')),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [

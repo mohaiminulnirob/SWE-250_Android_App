@@ -4,7 +4,7 @@ import 'package:project/repositories/event_requests_repo.dart';
 import 'package:project/pages/event_detail_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project/widgets/custom_app_bar.dart';
-import 'package:project/services/notification_service.dart'; // Ensure this import exists
+import 'package:project/services/notification_service.dart';
 
 class BookingApprovalPage extends StatefulWidget {
   const BookingApprovalPage({Key? key}) : super(key: key);

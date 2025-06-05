@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project/models/event_model.dart';
 import 'package:project/widgets/event_detail.dart';
-import 'package:project/widgets/custom_app_bar.dart'; // import your custom app bar
+import 'package:project/widgets/custom_app_bar.dart';
 
 class EventDetailPage extends StatefulWidget {
   final Event event;

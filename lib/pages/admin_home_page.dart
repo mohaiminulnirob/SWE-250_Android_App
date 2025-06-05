@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:project/pages/booking_approval.dart';
 import 'package:project/widgets/custom_app_bar.dart';
+import 'package:project/pages/event_management.dart';
 
 class AdminHomePage extends StatelessWidget {
   const AdminHomePage({super.key});
@@ -55,7 +56,11 @@ class AdminHomePage extends StatelessWidget {
                 Colors.orange.shade400,
                 Colors.deepOrange.shade600
               ],
-              onTap: () => _navigateToSection(context, 'Event Management'),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const EventManagementPage()),
+              ),
             ),
             HoverCard(
               icon: LucideIcons.bell,
