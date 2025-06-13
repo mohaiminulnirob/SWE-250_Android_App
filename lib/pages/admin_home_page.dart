@@ -3,18 +3,10 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:project/pages/booking_approval.dart';
 import 'package:project/widgets/custom_app_bar.dart';
 import 'package:project/pages/event_management.dart';
+import 'package:project/pages/spot_management.dart';
 
 class AdminHomePage extends StatelessWidget {
   const AdminHomePage({super.key});
-
-  void _navigateToSection(BuildContext context, String sectionName) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Navigating to $sectionName...'),
-        duration: const Duration(seconds: 2),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,50 +16,50 @@ class AdminHomePage extends StatelessWidget {
         showBackButton: false,
       ),
       backgroundColor: const Color(0xFFF5F5F5),
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: GridView.count(
-          crossAxisCount: 2,
-          childAspectRatio: 0.9,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
           children: [
             HoverCard(
               icon: LucideIcons.badgeCheck,
               title: 'Booking\nApproval',
-              gradientColors: [Colors.green.shade400, Colors.green.shade700],
+              gradientColors: [
+                Colors.green.shade400,
+                Colors.green.shade700,
+              ],
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => const BookingApprovalPage()),
               ),
             ),
+            const SizedBox(height: 20),
             HoverCard(
               icon: LucideIcons.mapPin,
               title: 'Spot\nManagement',
               gradientColors: [
                 Colors.deepPurple.shade400,
-                Colors.deepPurple.shade700
+                Colors.deepPurple.shade700,
               ],
-              onTap: () => _navigateToSection(context, 'Spot Management'),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const SpotManagementPage()),
+              ),
             ),
+            const SizedBox(height: 20),
             HoverCard(
               icon: LucideIcons.calendarDays,
               title: 'Event\nManagement',
               gradientColors: [
                 Colors.orange.shade400,
-                Colors.deepOrange.shade600
+                Colors.deepOrange.shade600,
               ],
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => const EventManagementPage()),
               ),
-            ),
-            HoverCard(
-              icon: LucideIcons.bell,
-              title: 'Notification\nManagement',
-              gradientColors: [Colors.blue.shade400, Colors.indigo.shade700],
-              onTap: () =>
-                  _navigateToSection(context, 'Notification Management'),
             ),
           ],
         ),
@@ -105,10 +97,10 @@ class _HoverCardState extends State<HoverCard> {
       child: GestureDetector(
         onTap: widget.onTap,
         child: AnimatedScale(
-          scale: _isHovered ? 1.05 : 1.0,
+          scale: _isHovered ? 1.02 : 1.0,
           duration: const Duration(milliseconds: 200),
           child: Container(
-            margin: const EdgeInsets.all(10),
+            margin: const EdgeInsets.symmetric(vertical: 10),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: widget.gradientColors,
@@ -124,26 +116,27 @@ class _HoverCardState extends State<HoverCard> {
                 ),
               ],
             ),
-            width: 150,
-            height: 150,
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            width: double.infinity,
+            height: 160,
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
+            child: Row(
               children: [
                 CircleAvatar(
                   backgroundColor: Colors.white.withOpacity(0.2),
-                  radius: 28,
-                  child: Icon(widget.icon, size: 30, color: Colors.white),
+                  radius: 32,
+                  child: Icon(widget.icon, size: 34, color: Colors.white),
                 ),
-                const SizedBox(height: 15),
-                Text(
-                  widget.title,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Urbanist',
-                    color: Colors.white,
+                const SizedBox(width: 24),
+                Expanded(
+                  child: Text(
+                    widget.title,
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Urbanist',
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ],

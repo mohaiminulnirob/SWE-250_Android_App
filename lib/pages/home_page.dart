@@ -6,6 +6,7 @@ import 'package:project/widgets/spot_list.dart';
 import 'package:project/widgets/event_list.dart';
 import 'package:project/repositories/event_repository.dart';
 import 'package:project/pages/profile_page.dart';
+import 'package:project/pages/past_events_page.dart';
 
 class HomePage extends StatefulWidget {
   final String uid;
@@ -81,12 +82,14 @@ class HomePageState extends State<HomePage> {
         Navigator.pushReplacementNamed(context, '/home');
         break;
       case 1:
-        Navigator.pushReplacementNamed(context, '/search');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PastEventsPage(),
+          ),
+        );
         break;
       case 2:
-        Navigator.pushReplacementNamed(context, '/notifications');
-        break;
-      case 3:
         Navigator.push(
           context,
           MaterialPageRoute(

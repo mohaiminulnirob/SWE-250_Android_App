@@ -4,8 +4,11 @@ class BottomNavBar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
 
-  const BottomNavBar(
-      {super.key, required this.currentIndex, required this.onTap});
+  const BottomNavBar({
+    super.key,
+    required this.currentIndex,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +24,8 @@ class BottomNavBar extends StatelessWidget {
           label: "Home",
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.search),
-          label: "Search",
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.notifications),
-          label: "Notifications",
+          icon: Icon(Icons.history),
+          label: "Past Events",
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),

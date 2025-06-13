@@ -26,6 +26,38 @@ class BookedDatesRepository {
     }
   }
 
+  Future<void> removePastDates() async {
+    final now = DateTime.now();
+    final firestore = FirebaseFirestore.instance;
+
+    try {
+      final snapshot = await firestore.collection('bookedDates').get();
+
+      for (final doc in snapshot.docs) {
+        final data = doc.data();
+        if (data['date'] is String) {
+          final dateStr = data['date'] as String;
+          final bookedDate = DateTime.tryParse(dateStr);
+
+          if (bookedDate == null) continue;
+
+          final today = DateTime(now.year, now.month, now.day);
+          final bookedDay =
+              DateTime(bookedDate.year, bookedDate.month, bookedDate.day);
+
+          if (bookedDay.isBefore(today)) {
+            await doc.reference.delete();
+          }
+        }
+      }
+
+      await refreshBookedDates();
+      print("✅ Past booked dates removed successfully.");
+    } catch (e) {
+      print("❌ Error removing past booked dates: $e");
+    }
+  }
+
   Future<void> _fetchBookedDates() async {
     try {
       final snapshot = await _firestore.collection('bookedDates').get();
