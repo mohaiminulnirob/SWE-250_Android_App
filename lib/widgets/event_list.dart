@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project/models/event_model.dart';
+import 'package:intl/intl.dart';
 
 class EventList extends StatefulWidget {
   final List<Event> events;
@@ -12,114 +13,120 @@ class EventList extends StatefulWidget {
 
 class _EventListState extends State<EventList> {
   final ScrollController _scrollController = ScrollController();
-  bool _showUpArrow = false;
-  bool _showDownArrow = true;
   late List<Event> _eventList;
 
   @override
   void initState() {
     super.initState();
     _eventList = List.from(widget.events);
-    _scrollController.addListener(_updateScrollArrows);
   }
 
-  void _updateScrollArrows() {
-    setState(() {
-      _showUpArrow = _scrollController.offset > 0;
-      _showDownArrow =
-          _scrollController.offset < _scrollController.position.maxScrollExtent;
-    });
-  }
+  String _getRemainingTime(DateTime date) {
+    final now = DateTime.now();
+    final difference = date.difference(now);
 
-  void _scrollUp() {
-    _scrollController.animateTo(
-      _scrollController.offset - 200,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  void _scrollDown() {
-    _scrollController.animateTo(
-      _scrollController.offset + 200,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-    );
+    if (difference.inDays > 0) {
+      return "${difference.inDays}d left";
+    } else if (difference.inHours > 0) {
+      return "${difference.inHours}h left";
+    } else if (difference.inMinutes > 0) {
+      return "${difference.inMinutes}m left";
+    } else {
+      return "Started";
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        SizedBox(
-          height: 300,
-          child: ListView.builder(
-            controller: _scrollController,
-            itemCount: _eventList.length,
-            itemBuilder: (context, index) {
-              final event = _eventList[index];
-              return Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: Colors.grey[200],
-                  ),
-                  child: ListTile(
-                    leading:
-                        const Icon(Icons.event, color: Colors.purpleAccent),
-                    title: Text(event.title),
-                    subtitle:
-                        Text("${event.organizationName} • ${event.session}"),
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onTap: () {
-                      _showEventDetails(event);
-                    },
+    return SizedBox(
+      height: 300,
+      child: ListView.builder(
+        controller: _scrollController,
+        itemCount: _eventList.length,
+        itemBuilder: (context, index) {
+          final event = _eventList[index];
+          final remainingTime = _getRemainingTime(event.date);
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: const Color.fromARGB(255, 15, 127, 152),
+              ),
+              child: ListTile(
+                leading: const Icon(Icons.event, color: Colors.purpleAccent),
+                title: Text(
+                  event.title,
+                  style: const TextStyle(
+                    fontFamily: 'Urbanist',
+                    color: Colors.white,
                   ),
                 ),
-              );
-            },
-          ),
-        ),
-        if (_showUpArrow)
-          Positioned(
-            top: 0,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_upward,
-                  color: Color.fromARGB(231, 9, 9, 9)),
-              onPressed: _scrollUp,
+                subtitle: Text(
+                  "${event.organizationName} • ${event.session}",
+                  style: const TextStyle(
+                    fontFamily: 'Urbanist',
+                    color: Colors.white,
+                  ),
+                ),
+                trailing: Text(
+                  remainingTime,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Urbanist',
+                    color: Colors.white,
+                  ),
+                ),
+                onTap: () => _showEventDetails(event),
+              ),
             ),
-          ),
-        if (_showDownArrow)
-          Positioned(
-            bottom: 0,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_downward,
-                  color: Color.fromARGB(231, 9, 9, 9)),
-              onPressed: _scrollDown,
-            ),
-          ),
-      ],
+          );
+        },
+      ),
     );
   }
 
   void _showEventDetails(Event event) {
+    final formattedDate = DateFormat('dd-MM-yyyy').format(event.date);
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(event.title),
+        backgroundColor: const Color.fromARGB(255, 44, 49, 60),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        title: Text(
+          event.title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Urbanist',
+            fontSize: 18,
+            color: Colors.white,
+          ),
+        ),
         content: Text(
-          "Organization: ${event.organizationName}\n"
-          "Date: ${event.date.day}-${event.date.month}-${event.date.year}\n"
-          "Session: ${event.session}\n\n"
-          "Description: ${event.description}",
+          "📅 Date: $formattedDate\n"
+          "🏢 Organization: ${event.organizationName}\n"
+          "📘 Session: ${event.session}\n\n"
+          "📝 Description:\n${event.description}",
+          style: const TextStyle(
+            fontFamily: 'Urbanist',
+            fontSize: 14,
+            color: Colors.white,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Close"),
+            child: const Text(
+              "Close",
+              style: TextStyle(
+                fontFamily: 'Urbanist',
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
           ),
         ],
       ),

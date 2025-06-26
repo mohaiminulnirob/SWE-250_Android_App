@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:project/pages/auditorium.dart';
 import 'package:project/pages/basketball_ground.dart';
@@ -10,49 +11,69 @@ class SpotList extends StatefulWidget {
   final List<String> spotImages;
   final List<String> spotNames;
 
-  const SpotList(
-      {super.key,
-      required this.spotImages,
-      required this.spotNames,
-      required this.uid});
+  const SpotList({
+    super.key,
+    required this.spotImages,
+    required this.spotNames,
+    required this.uid,
+  });
 
   @override
   State<SpotList> createState() => _SpotListState();
 }
 
 class _SpotListState extends State<SpotList> {
-  final ScrollController _scrollController = ScrollController();
-  bool _showLeftArrow = false;
-  bool _showRightArrow = true;
+  late final PageController _pageController;
+  Timer? _timer;
+  int _currentPage = 0;
+
+  int get realLength => widget.spotImages.length;
+
+  List<String> get _loopedImages => [
+        widget.spotImages.last,
+        ...widget.spotImages,
+        widget.spotImages.first,
+      ];
+
+  List<String> get _loopedNames => [
+        widget.spotNames.last,
+        ...widget.spotNames,
+        widget.spotNames.first,
+      ];
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_updateScrollArrows);
+    _pageController = PageController(initialPage: 1);
+    _startAutoScroll();
   }
 
-  void _updateScrollArrows() {
-    setState(() {
-      _showLeftArrow = _scrollController.offset > 0;
-      _showRightArrow =
-          _scrollController.offset < _scrollController.position.maxScrollExtent;
+  void _startAutoScroll() {
+    _timer = Timer.periodic(const Duration(seconds: 3), (_) {
+      if (_pageController.hasClients) {
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOut,
+        );
+      }
     });
   }
 
-  void _scrollLeft() {
-    _scrollController.animateTo(
-      _scrollController.offset - 300,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-    );
-  }
-
-  void _scrollRight() {
-    _scrollController.animateTo(
-      _scrollController.offset + 300,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-    );
+  void _onPageChanged(int index) {
+    if (index == 0) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        _pageController.jumpToPage(realLength);
+      });
+      _currentPage = realLength - 1;
+    } else if (index == realLength + 1) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        _pageController.jumpToPage(1);
+      });
+      _currentPage = 0;
+    } else {
+      _currentPage = index - 1;
+    }
+    setState(() {});
   }
 
   Widget? _getSpotPage(String spotName) {
@@ -74,19 +95,18 @@ class _SpotListState extends State<SpotList> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
+    return Column(
       children: [
         SizedBox(
-          height: 250,
-          child: ListView.builder(
-            controller: _scrollController,
-            scrollDirection: Axis.horizontal,
-            itemCount: widget.spotImages.length,
+          height: 200,
+          child: PageView.builder(
+            controller: _pageController,
+            itemCount: _loopedImages.length,
+            onPageChanged: _onPageChanged,
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
-                  Widget? page = _getSpotPage(widget.spotNames[index]);
+                  Widget? page = _getSpotPage(_loopedNames[index]);
                   if (page != null) {
                     Navigator.push(
                       context,
@@ -94,71 +114,68 @@ class _SpotListState extends State<SpotList> {
                     );
                   }
                 },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Stack(
-                      children: [
-                        Image.asset(
-                          widget.spotImages[index],
-                          height: 242,
-                          width: 342,
-                          fit: BoxFit.cover,
-                        ),
-                        Positioned(
-                          bottom: 10,
-                          left: 10,
-                          right: 10,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 10),
-                            decoration: BoxDecoration(
-                              color: Colors.black54,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              widget.spotNames[index],
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Urbanist'),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ],
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.asset(
+                        _loopedImages[index],
+                        height: 200,
+                        width: MediaQuery.of(context).size.width,
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                  ),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.tealAccent.withOpacity(0.3),
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(12),
+                          bottomRight: Radius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        _loopedNames[index],
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 248, 249, 249),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Urbanist',
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
                 ),
               );
             },
           ),
         ),
-        if (_showLeftArrow)
-          Positioned(
-            left: 0,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-              onPressed: _scrollLeft,
-            ),
-          ),
-        if (_showRightArrow)
-          Positioned(
-            right: 0,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_forward_ios, color: Colors.black),
-              onPressed: _scrollRight,
-            ),
-          ),
+        const SizedBox(height: 8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(realLength, (index) {
+            return Container(
+              margin: const EdgeInsets.symmetric(horizontal: 4),
+              width: _currentPage == index ? 6 : 3,
+              height: _currentPage == index ? 6 : 3,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _currentPage == index ? Colors.white : Colors.black,
+              ),
+            );
+          }),
+        ),
       ],
     );
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _timer?.cancel();
+    _pageController.dispose();
     super.dispose();
   }
 }

@@ -28,11 +28,15 @@ class _EventManagementPageState extends State<EventManagementPage> {
   }
 
   Future<void> _movePastEvents() async {
-    final now = DateTime.now();
-    final pastEvents = EventRepository()
-        .events
-        .where((event) => event.date.isBefore(now))
-        .toList();
+    final today = DateTime.now();
+    final pastEvents = EventRepository().events.where((event) {
+      final eventDate = event.date;
+      return (eventDate.year < today.year) ||
+          (eventDate.year == today.year && eventDate.month < today.month) ||
+          (eventDate.year == today.year &&
+              eventDate.month == today.month &&
+              eventDate.day < today.day);
+    }).toList();
 
     for (final event in pastEvents) {
       await FirebaseFirestore.instance
@@ -47,7 +51,15 @@ class _EventManagementPageState extends State<EventManagementPage> {
     }
 
     setState(() {
-      EventRepository().events.removeWhere((event) => event.date.isBefore(now));
+      final today = DateTime.now();
+      EventRepository().events.removeWhere((event) {
+        final eventDate = event.date;
+        return (eventDate.year < today.year) ||
+            (eventDate.year == today.year && eventDate.month < today.month) ||
+            (eventDate.year == today.year &&
+                eventDate.month == today.month &&
+                eventDate.day < today.day);
+      });
       _eventsFuture = _loadEvents();
     });
 
