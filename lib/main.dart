@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:project/pages/welcome_page.dart';
+import 'package:project/services/device_notifications.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'firebase_options.dart';
@@ -10,7 +11,7 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   WebViewPlatform.instance = AndroidWebViewPlatform();
-
+  await DeviceNotifications.initialize();
   runApp(const MyApp());
 }
 

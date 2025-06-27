@@ -11,6 +11,7 @@ import 'package:project/pages/past_events_page.dart';
 import 'package:project/pages/booking_page.dart';
 import 'package:project/widgets/spot_map.dart';
 import 'package:project/widgets/book_spot_box.dart';
+import 'package:project/pages/notifications_page.dart';
 
 class HomePage extends StatefulWidget {
   final String uid;
@@ -93,10 +94,16 @@ class HomePageState extends State<HomePage> {
       case 1:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => PastEventsPage()),
+          MaterialPageRoute(builder: (context) => const NotificationsPage()),
         );
         break;
       case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const PastEventsPage()),
+        );
+        break;
+      case 3:
         Navigator.push(
           context,
           MaterialPageRoute(

@@ -5,6 +5,7 @@ import 'package:project/models/event_model.dart';
 import 'package:project/widgets/custom_app_bar.dart';
 import 'package:project/pages/event_detail_page.dart';
 import 'package:project/repositories/event_repository.dart';
+import 'package:project/repositories/notifications_repo.dart';
 
 class EventManagementPage extends StatefulWidget {
   const EventManagementPage({super.key});
@@ -194,6 +195,44 @@ class _EventManagementPageState extends State<EventManagementPage> {
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ElevatedButton.icon(
+                onPressed: () async {
+                  final notificationsRepo = NotificationsRepository();
+                  final events = await _eventsFuture;
+
+                  await notificationsRepo.deletePastNotifications();
+                  await notificationsRepo.addTodayEvents(events);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        "Event notifications updated successfully.",
+                        style: TextStyle(fontFamily: 'Urbanist'),
+                      ),
+                    ),
+                  );
+                },
+                icon:
+                    const Icon(Icons.notifications_active, color: Colors.white),
+                label: const Text(
+                  "Update Event Notifications",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.white,
+                    fontFamily: 'Urbanist',
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurple,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
             Expanded(
               child: FutureBuilder<List<Event>>(
                 future: _eventsFuture,
@@ -218,8 +257,7 @@ class _EventManagementPageState extends State<EventManagementPage> {
                               horizontal: 16, vertical: 8),
                           elevation: 4,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+                              borderRadius: BorderRadius.circular(12)),
                           child: Padding(
                             padding: const EdgeInsets.all(12.0),
                             child: Column(
@@ -229,10 +267,11 @@ class _EventManagementPageState extends State<EventManagementPage> {
                                   title: Text(
                                     event.title,
                                     style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Urbanist',
-                                        color: Colors.white),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Urbanist',
+                                      color: Colors.white,
+                                    ),
                                   ),
                                   subtitle: Column(
                                     crossAxisAlignment:
@@ -263,30 +302,24 @@ class _EventManagementPageState extends State<EventManagementPage> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (_) =>
-                                                EventDetailPage(event: event),
-                                          ),
+                                              builder: (_) => EventDetailPage(
+                                                  event: event)),
                                         );
                                       },
                                       icon: const Icon(Icons.visibility),
-                                      label: const Text(
-                                        "View Details",
-                                        style:
-                                            TextStyle(fontFamily: 'Urbanist'),
-                                      ),
+                                      label: const Text("View Details",
+                                          style: TextStyle(
+                                              fontFamily: 'Urbanist')),
                                     ),
                                     const SizedBox(width: 12),
                                     ElevatedButton.icon(
                                       onPressed: () => _editEvent(event),
                                       icon: const Icon(Icons.edit),
-                                      label: const Text(
-                                        "Edit Details",
-                                        style:
-                                            TextStyle(fontFamily: 'Urbanist'),
-                                      ),
+                                      label: const Text("Edit Details",
+                                          style: TextStyle(
+                                              fontFamily: 'Urbanist')),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.orange,
-                                      ),
+                                          backgroundColor: Colors.orange),
                                     ),
                                   ],
                                 ),

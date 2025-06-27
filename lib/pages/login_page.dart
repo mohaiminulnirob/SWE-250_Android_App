@@ -7,6 +7,7 @@ import 'package:project/pages/home_page.dart';
 import 'package:project/pages/password_retrieve_page.dart';
 import 'package:project/pages/admin_registration.dart';
 import 'package:project/pages/admin_login.dart';
+import 'package:project/widgets/notify_todays_events.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -71,6 +72,7 @@ class _LoginPageState extends State<LoginPage>
     setState(() => _isLoading = false);
 
     if (user != null) {
+      await notifyTodaysEvents();
       if (mounted) {
         Navigator.push(
           context,
