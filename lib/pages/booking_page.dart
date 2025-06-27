@@ -27,23 +27,48 @@ class BookingPage extends StatefulWidget {
   State<BookingPage> createState() => _BookingPageState();
 }
 
-class _BookingPageState extends State<BookingPage> {
+class _BookingPageState extends State<BookingPage>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   String? _organizationType;
   String? _organizationName;
-  String? _officialEmail;
   String? _eventTitle;
   String? _eventDescription;
   String _applicationImageUrl = "";
   bool _acceptedTerms = false;
+  bool _isSubmitting = false;
+  bool _isImageUploading = false;
+  bool _isSubmitted = false;
+
   final StorageService _profileStorageService = StorageService();
   final NotificationService _notificationService = NotificationService();
+
+  late AnimationController _animationController;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, -1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+    _animationController.forward();
+  }
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate() &&
         _acceptedTerms &&
         _applicationImageUrl.isNotEmpty) {
       _formKey.currentState!.save();
+      setState(() => _isSubmitting = true);
 
       final newEvent = Event(
         uid: widget.uid,
@@ -68,6 +93,7 @@ class _BookingPageState extends State<BookingPage> {
       await BookedDatesRepository().refreshBookedDates();
       await SpotBookedDatesRepository().refresh();
       await EventRepository().refreshEvents();
+
       final userData = await _profileStorageService.fetchUserData();
       if (userData != null) {
         await _notificationService.sendBookingConfirmationEmail(
@@ -80,6 +106,11 @@ class _BookingPageState extends State<BookingPage> {
         );
       }
 
+      setState(() {
+        _isSubmitting = false;
+        _isSubmitted = true;
+      });
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Request Submitted Successfully!')),
       );
@@ -91,11 +122,11 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   Future<void> _uploadApplicationImage() async {
+    setState(() => _isImageUploading = true);
     String? imageUrl = await _profileStorageService.uploadApplicationImage();
+    setState(() => _isImageUploading = false);
     if (imageUrl != null) {
-      setState(() {
-        _applicationImageUrl = imageUrl;
-      });
+      setState(() => _applicationImageUrl = imageUrl);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text("Application image uploaded successfully!")),
@@ -110,116 +141,132 @@ class _BookingPageState extends State<BookingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black.withOpacity(0.8),
       appBar: const CustomAppBar(title: "SpotEase SUST", showBackButton: true),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                "Complete Your Booking Request",
-                style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Urbanist'),
-              ),
-              const SizedBox(height: 24),
-              _buildReadOnlyField("Spot Name", widget.spotName),
-              _buildReadOnlyField(
-                "Selected Date",
-                "${widget.selectedDate.day}-${widget.selectedDate.month}-${widget.selectedDate.year}",
-              ),
-              _buildReadOnlyField("Session", widget.session),
-              const SizedBox(height: 20),
-              DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  labelText: "Organization/Department",
-                  border: OutlineInputBorder(),
-                ),
-                items: const [
-                  DropdownMenuItem(
-                      value: "Organization", child: Text("Organization")),
-                  DropdownMenuItem(
-                      value: "Department", child: Text("Department")),
-                ],
-                onChanged: (value) => setState(() => _organizationType = value),
-                validator: (value) =>
-                    value == null ? "Please select an option" : null,
-              ),
-              const SizedBox(height: 20),
-              _buildTextField(
-                  "Organization/Department Name",
-                  "Enter organization/department name",
-                  (value) => _organizationName = value),
-              const SizedBox(height: 20),
-              _buildTextField("Event Title", "Enter event title",
-                  (value) => _eventTitle = value),
-              const SizedBox(height: 20),
-              _buildTextField(
-                  "Event Description",
-                  "Enter event details (Max 100 words)",
-                  (value) => _eventDescription = value,
-                  TextInputType.multiline,
-                  100),
-              const SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: _uploadApplicationImage,
-                icon: const Icon(Icons.upload_file),
-                label: const Text("Upload Booking Application Image"),
-              ),
-              if (_applicationImageUrl.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Image.network(
-                    _applicationImageUrl,
-                    height: 100,
-                  ),
-                ),
-              const SizedBox(height: 20),
-              CheckboxListTile(
-                title: const Text(
-                  "I agree to follow the guidelines for using this spot responsibly.",
-                ),
-                value: _acceptedTerms,
-                onChanged: (value) =>
-                    setState(() => _acceptedTerms = value ?? false),
-                controlAffinity: ListTileControlAffinity.leading,
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: SlideTransition(
+        position: _slideAnimation,
+        child: AbsorbPointer(
+          absorbing: _isSubmitting || _isSubmitted,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                    child: const Text(
-                      "Cancel",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Urbanist'),
-                    ),
+                  const Text(
+                    "Complete Your Booking Request",
+                    style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Urbanist',
+                        color: Colors.white),
                   ),
-                  ElevatedButton(
-                    onPressed: _submitForm,
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                    child: const Text(
-                      "Submit Request",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Urbanist'),
-                    ),
+                  const SizedBox(height: 24),
+                  _buildReadOnlyField("Spot Name", widget.spotName),
+                  _buildReadOnlyField(
+                    "Selected Date",
+                    "${widget.selectedDate.day}-${widget.selectedDate.month}-${widget.selectedDate.year}",
                   ),
+                  _buildReadOnlyField("Session", widget.session),
+                  const SizedBox(height: 20),
+                  DropdownButtonFormField<String>(
+                    dropdownColor: Colors.grey[900],
+                    decoration: const InputDecoration(
+                      labelText: "Organization/Department",
+                      labelStyle: TextStyle(color: Colors.white70),
+                      border: OutlineInputBorder(),
+                    ),
+                    items: const [
+                      DropdownMenuItem(
+                          value: "Organization",
+                          child: Text("Organization",
+                              style: TextStyle(color: Colors.white))),
+                      DropdownMenuItem(
+                          value: "Department",
+                          child: Text("Department",
+                              style: TextStyle(color: Colors.white))),
+                    ],
+                    onChanged: (value) =>
+                        setState(() => _organizationType = value),
+                    validator: (value) =>
+                        value == null ? "Please select an option" : null,
+                  ),
+                  const SizedBox(height: 20),
+                  _buildTextField(
+                      "Organization/Department Name",
+                      "Enter organization/department name",
+                      (value) => _organizationName = value),
+                  const SizedBox(height: 20),
+                  _buildTextField("Event Title", "Enter event title",
+                      (value) => _eventTitle = value),
+                  const SizedBox(height: 20),
+                  _buildTextField(
+                      "Event Description",
+                      "Enter event details (Max 100 words)",
+                      (value) => _eventDescription = value,
+                      TextInputType.multiline,
+                      100),
+                  const SizedBox(height: 20),
+                  ElevatedButton.icon(
+                    onPressed: _uploadApplicationImage,
+                    icon: const Icon(Icons.upload_file),
+                    label: const Text("Upload Booking Application Image"),
+                  ),
+                  if (_isImageUploading)
+                    const Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+                  if (_applicationImageUrl.isNotEmpty && !_isImageUploading)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Image.network(_applicationImageUrl, height: 100),
+                    ),
+                  const SizedBox(height: 20),
+                  CheckboxListTile(
+                    title: const Text(
+                        "I agree to follow the guidelines for using this spot responsibly.",
+                        style: TextStyle(color: Colors.white)),
+                    value: _acceptedTerms,
+                    onChanged: (value) =>
+                        setState(() => _acceptedTerms = value ?? false),
+                    controlAffinity: ListTileControlAffinity.leading,
+                  ),
+                  const SizedBox(height: 20),
+                  if (_isSubmitting)
+                    const Center(child: CircularProgressIndicator()),
+                  if (!_isSubmitting && !_isSubmitted)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red),
+                          child: const Text("Cancel",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Urbanist')),
+                        ),
+                        ElevatedButton(
+                          onPressed: _submitForm,
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green),
+                          child: const Text("Submit Request",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Urbanist')),
+                        ),
+                      ],
+                    ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),
@@ -232,8 +279,10 @@ class _BookingPageState extends State<BookingPage> {
       child: TextFormField(
         initialValue: value,
         readOnly: true,
+        style: const TextStyle(color: Colors.white),
         decoration: InputDecoration(
           labelText: label,
+          labelStyle: const TextStyle(color: Colors.white70),
           border: const OutlineInputBorder(),
         ),
       ),
@@ -248,9 +297,12 @@ class _BookingPageState extends State<BookingPage> {
     int? maxWords,
   ]) {
     return TextFormField(
+      style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
+        labelStyle: const TextStyle(color: Colors.white70),
+        hintStyle: const TextStyle(color: Colors.white38),
         border: const OutlineInputBorder(),
       ),
       keyboardType: keyboardType,

@@ -95,109 +95,132 @@ class _BookingApprovalPageState extends State<BookingApprovalPage> {
     final List<Event> eventRequests = _repository.eventRequests;
 
     return Scaffold(
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         title: "Booking Requests",
         showBackButton: true,
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : eventRequests.isEmpty
-              ? const Center(
-                  child: Text(
-                    "No booking requests found.",
-                    style: TextStyle(fontFamily: 'Urbanist'),
-                  ),
-                )
-              : ListView.builder(
-                  itemCount: eventRequests.length,
-                  itemBuilder: (context, index) {
-                    final event = eventRequests[index];
-                    return Card(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
-                      elevation: 4,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              title: Text(
-                                event.title,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Urbanist',
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFF1E1E2C), Color(0xFF23232F)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : eventRequests.isEmpty
+                ? const Center(
+                    child: Text(
+                      "No booking requests found.",
+                      style: TextStyle(
+                          fontFamily: 'Urbanist', color: Colors.white70),
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: eventRequests.length,
+                    itemBuilder: (context, index) {
+                      final event = eventRequests[index];
+                      return Card(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        elevation: 4,
+                        color: Colors.white.withOpacity(0.08),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                title: Text(
+                                  event.title,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Urbanist',
+                                    color: Colors.white,
+                                  ),
                                 ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      "Organization: ${event.organizationName}",
+                                      style: const TextStyle(
+                                          fontFamily: 'Urbanist',
+                                          color: Colors.white70),
+                                    ),
+                                    Text(
+                                      "Date: ${event.date.toLocal().toString().split(' ')[0]}",
+                                      style: const TextStyle(
+                                          fontFamily: 'Urbanist',
+                                          color: Colors.white70),
+                                    ),
+                                    Text(
+                                      "Session: ${event.session}",
+                                      style: const TextStyle(
+                                          fontFamily: 'Urbanist',
+                                          color: Colors.white70),
+                                    ),
+                                  ],
+                                ),
+                                trailing: const Icon(Icons.arrow_forward_ios,
+                                    color: Colors.white54),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          EventDetailPage(event: event),
+                                    ),
+                                  );
+                                },
                               ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              const SizedBox(height: 12),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    "Organization: ${event.organizationName}",
-                                    style:
-                                        const TextStyle(fontFamily: 'Urbanist'),
+                                  ElevatedButton(
+                                    onPressed: () => _approveEvent(event),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.greenAccent[400],
+                                      foregroundColor: Colors.black,
+                                    ),
+                                    child: const Text(
+                                      "Approve",
+                                      style: TextStyle(
+                                          fontFamily: 'Urbanist',
+                                          fontWeight: FontWeight.w600),
+                                    ),
                                   ),
-                                  Text(
-                                    "Date: ${event.date.toLocal().toString().split(' ')[0]}",
-                                    style:
-                                        const TextStyle(fontFamily: 'Urbanist'),
-                                  ),
-                                  Text(
-                                    "Session: ${event.session}",
-                                    style:
-                                        const TextStyle(fontFamily: 'Urbanist'),
+                                  const SizedBox(width: 12),
+                                  ElevatedButton(
+                                    onPressed: () => _rejectEvent(event),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.redAccent,
+                                      foregroundColor: Colors.white,
+                                    ),
+                                    child: const Text(
+                                      "Reject",
+                                      style: TextStyle(
+                                          fontFamily: 'Urbanist',
+                                          fontWeight: FontWeight.w600),
+                                    ),
                                   ),
                                 ],
                               ),
-                              trailing: const Icon(Icons.arrow_forward_ios),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) =>
-                                        EventDetailPage(event: event),
-                                  ),
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 12),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () => _approveEvent(event),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green,
-                                  ),
-                                  child: const Text(
-                                    "Approve",
-                                    style: TextStyle(fontFamily: 'Urbanist'),
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                ElevatedButton(
-                                  onPressed: () => _rejectEvent(event),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
-                                  ),
-                                  child: const Text(
-                                    "Reject",
-                                    style: TextStyle(fontFamily: 'Urbanist'),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
+                      );
+                    },
+                  ),
+      ),
     );
   }
 }

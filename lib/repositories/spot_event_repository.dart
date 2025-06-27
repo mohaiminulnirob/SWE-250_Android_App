@@ -24,10 +24,6 @@ class SpotEventRepository {
     }
   }
 
-  // Future<void> refresh() async {
-  //   initializeFromEventRepository();
-  // }
-
   List<Event> getEventsForSpot(String spotName) {
     return _spotEvents[spotName] ?? [];
   }

@@ -5,6 +5,7 @@ import 'package:project/widgets/spot_location.dart';
 import 'package:project/widgets/spot_upcoming_events.dart';
 import 'package:project/widgets/availability_calender.dart';
 import 'package:project/repositories/spot_event_repository.dart';
+import 'package:project/widgets/spot_helpline.dart';
 
 class AuditoriumPage extends StatefulWidget {
   final String uid;
@@ -19,6 +20,7 @@ class _AuditoriumPageState extends State<AuditoriumPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black.withOpacity(0.6),
       appBar: const CustomAppBar(title: "SpotEase SUST", showBackButton: true),
       body: SingleChildScrollView(
         child: Column(
@@ -68,6 +70,13 @@ class _AuditoriumPageState extends State<AuditoriumPage> {
                   style: TextStyle(fontSize: 16),
                 ),
               ),
+            ),
+            SpotHelpline(
+              contacts: [
+                {"name": "Campus Security", "phone": "01700000001"},
+                {"name": "Auditorium Manager", "phone": "01700000002"},
+                {"name": "Emergency Hotline", "phone": "999"},
+              ],
             ),
             const SpotLocation(spotName: 'Auditorium'),
             SpotUpcomingEvents(

@@ -27,7 +27,6 @@ class _AvailabilityCalendarState extends State<AvailabilityCalendar> {
   @override
   void initState() {
     super.initState();
-
     _firstDay = DateTime(_focusedDay.year, _focusedDay.month, 1);
     _lastDay = DateTime(
       _focusedDay.month == 12 ? _focusedDay.year + 1 : _focusedDay.year,
@@ -41,20 +40,14 @@ class _AvailabilityCalendarState extends State<AvailabilityCalendar> {
 
   void _toggleCalendar() async {
     if (!_isCalendarVisible) {
-      setState(() {
-        _isLoading = true;
-      });
-
+      setState(() => _isLoading = true);
       await _loadUnavailableDates();
-
       setState(() {
         _isLoading = false;
         _isCalendarVisible = true;
       });
     } else {
-      setState(() {
-        _isCalendarVisible = false;
-      });
+      setState(() => _isCalendarVisible = false);
     }
   }
 
@@ -105,7 +98,7 @@ class _AvailabilityCalendarState extends State<AvailabilityCalendar> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              width: 180,
+              width: 250,
               height: 40,
               child: ElevatedButton(
                 onPressed: _toggleCalendar,
@@ -116,9 +109,9 @@ class _AvailabilityCalendarState extends State<AvailabilityCalendar> {
                   ),
                 ),
                 child: const Text(
-                  "Check Availability",
+                  "Availability Calendar",
                   style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                       fontFamily: 'Urbanist'),
@@ -139,161 +132,194 @@ class _AvailabilityCalendarState extends State<AvailabilityCalendar> {
                 )
               : _isCalendarVisible
                   ? SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          TableCalendar(
-                            focusedDay: _focusedDay,
-                            firstDay: _firstDay,
-                            lastDay: _lastDay,
-                            selectedDayPredicate: (day) =>
-                                isSameDay(_selectedDay, day),
-                            onDaySelected: (selectedDay, focusedDay) {
-                              if (_isDayUnavailable(selectedDay)) return;
-                              setState(() {
-                                _selectedDay = selectedDay;
-                                _focusedDay = focusedDay;
-                              });
-                            },
-                            onPageChanged: (focusedDay) {
-                              if (focusedDay.isBefore(_firstDay)) {
-                                setState(() => _focusedDay = _firstDay);
-                              } else if (focusedDay.isAfter(_lastDay)) {
-                                setState(() => _focusedDay = _lastDay);
-                              } else {
-                                setState(() => _focusedDay = focusedDay);
-                              }
-                            },
-                            enabledDayPredicate: (day) =>
-                                !_isDayUnavailable(day) &&
-                                !day.isBefore(_firstDay) &&
-                                !day.isAfter(_lastDay),
-                            calendarStyle: CalendarStyle(
-                              todayDecoration: BoxDecoration(
-                                color: Colors.blue,
-                                shape: BoxShape.circle,
+                      child: Container(
+                        color: Colors.black,
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          children: [
+                            TableCalendar(
+                              focusedDay: _focusedDay,
+                              firstDay: _firstDay,
+                              lastDay: _lastDay,
+                              selectedDayPredicate: (day) =>
+                                  isSameDay(_selectedDay, day),
+                              onDaySelected: (selectedDay, focusedDay) {
+                                if (_isDayUnavailable(selectedDay)) return;
+                                setState(() {
+                                  _selectedDay = selectedDay;
+                                  _focusedDay = focusedDay;
+                                });
+                              },
+                              onPageChanged: (focusedDay) {
+                                if (focusedDay.isBefore(_firstDay)) {
+                                  setState(() => _focusedDay = _firstDay);
+                                } else if (focusedDay.isAfter(_lastDay)) {
+                                  setState(() => _focusedDay = _lastDay);
+                                } else {
+                                  setState(() => _focusedDay = focusedDay);
+                                }
+                              },
+                              enabledDayPredicate: (day) =>
+                                  !_isDayUnavailable(day) &&
+                                  !day.isBefore(_firstDay) &&
+                                  !day.isAfter(_lastDay),
+                              calendarStyle: CalendarStyle(
+                                defaultTextStyle:
+                                    const TextStyle(color: Colors.white),
+                                weekendTextStyle:
+                                    const TextStyle(color: Colors.white70),
+                                outsideTextStyle:
+                                    const TextStyle(color: Colors.grey),
+                                todayDecoration: const BoxDecoration(
+                                  color: Colors.blue,
+                                  shape: BoxShape.circle,
+                                ),
+                                selectedDecoration: const BoxDecoration(
+                                  color: Colors.green,
+                                  shape: BoxShape.circle,
+                                ),
+                                disabledTextStyle:
+                                    const TextStyle(color: Colors.redAccent),
                               ),
-                              selectedDecoration: BoxDecoration(
-                                color: Colors.green,
-                                shape: BoxShape.circle,
-                              ),
-                              disabledTextStyle:
-                                  const TextStyle(color: Colors.red),
-                            ),
-                            calendarBuilders: CalendarBuilders(
-                              defaultBuilder: (context, day, focusedDay) {
-                                if (_isDayUnavailable(day)) {
-                                  return Center(
-                                    child: Container(
-                                      width: 35,
-                                      height: 35,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.red,
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          '${day.day}',
-                                          style: const TextStyle(
-                                              color: Colors.white),
+                              calendarBuilders: CalendarBuilders(
+                                defaultBuilder: (context, day, focusedDay) {
+                                  if (_isDayUnavailable(day)) {
+                                    return Center(
+                                      child: Container(
+                                        width: 35,
+                                        height: 35,
+                                        decoration: const BoxDecoration(
+                                          color: Colors.red,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            '${day.day}',
+                                            style: const TextStyle(
+                                                color: Colors.white),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                }
-                                return null;
-                              },
+                                    );
+                                  }
+                                  return null;
+                                },
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.black54),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    _selectedDay == null
-                                        ? "Select Date"
-                                        : "${_selectedDay!.day}-${_selectedDay!.month}-${_selectedDay!.year}",
-                                    style: const TextStyle(fontSize: 17),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: SizedBox(
-                                  height: 40,
-                                  child: DropdownButtonFormField<String>(
-                                    value: _selectedSession,
-                                    isDense: true,
-                                    decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 10),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.white70),
+                                      borderRadius: BorderRadius.circular(8),
                                     ),
-                                    hint: const Text("Select Session"),
-                                    items: const [
-                                      DropdownMenuItem(
-                                          value: "Day", child: Text("Day")),
-                                      DropdownMenuItem(
-                                          value: "Night", child: Text("Night")),
-                                    ],
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _selectedSession = value;
-                                      });
-                                    },
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      _selectedDay == null
+                                          ? "Select Date"
+                                          : "${_selectedDay!.day}-${_selectedDay!.month}-${_selectedDay!.year}",
+                                      style: const TextStyle(
+                                          fontSize: 17,
+                                          color: Colors.white,
+                                          fontFamily: 'Urbanist'),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ElevatedButton(
-                                onPressed: _clearSelection,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 40,
+                                    child: DropdownButtonFormField<String>(
+                                      value: _selectedSession,
+                                      dropdownColor: Colors.grey[900],
+                                      isDense: true,
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 10, vertical: 10),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                              color: Colors.white54),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        hintStyle: const TextStyle(
+                                            color: Colors.white70),
+                                      ),
+                                      iconEnabledColor: Colors.white,
+                                      hint: const Text("Select Session",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: 'Urbanist')),
+                                      items: const [
+                                        DropdownMenuItem(
+                                            value: "Day",
+                                            child: Text("Day",
+                                                style: TextStyle(
+                                                    color: Colors.white))),
+                                        DropdownMenuItem(
+                                            value: "Night",
+                                            child: Text("Night",
+                                                style: TextStyle(
+                                                    color: Colors.white))),
+                                      ],
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _selectedSession = value;
+                                        });
+                                      },
+                                    ),
                                   ),
                                 ),
-                                child: const Text("Cancel",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: 'Urbanist')),
-                              ),
-                              const SizedBox(width: 18),
-                              ElevatedButton(
-                                onPressed: _isProceedEnabled
-                                    ? _navigateToBookingPage
-                                    : null,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.green,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: _clearSelection,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
                                   ),
+                                  child: const Text("Cancel",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Urbanist')),
                                 ),
-                                child: const Text("Proceed",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: 'Urbanist')),
-                              ),
-                            ],
-                          ),
-                        ],
+                                const SizedBox(width: 18),
+                                ElevatedButton(
+                                  onPressed: _isProceedEnabled
+                                      ? _navigateToBookingPage
+                                      : null,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.green,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  child: const Text("Proceed",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Urbanist')),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     )
                   : const SizedBox.shrink(),

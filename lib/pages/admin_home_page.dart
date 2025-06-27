@@ -4,9 +4,25 @@ import 'package:project/pages/booking_approval.dart';
 import 'package:project/widgets/custom_app_bar.dart';
 import 'package:project/pages/event_management.dart';
 import 'package:project/pages/spot_management.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:project/widgets/logout_confirmation_dialog.dart';
 
-class AdminHomePage extends StatelessWidget {
+class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});
+
+  @override
+  State<AdminHomePage> createState() => _AdminHomePageState();
+}
+
+class _AdminHomePageState extends State<AdminHomePage> {
+  final _authService = FirebaseAuth.instance;
+
+  void _handleLogout() async {
+    await _authService.signOut();
+    if (mounted) {
+      Navigator.pushNamedAndRemoveUntil(context, '/welcome', (route) => false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,50 +31,98 @@ class AdminHomePage extends StatelessWidget {
         title: 'Admin Dashboard',
         showBackButton: false,
       ),
-      backgroundColor: const Color(0xFFF5F5F5),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color.fromARGB(255, 105, 125, 164),
+              Color.fromARGB(255, 21, 34, 59),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
         child: Column(
           children: [
-            HoverCard(
-              icon: LucideIcons.badgeCheck,
-              title: 'Booking\nApproval',
-              gradientColors: [
-                Colors.green.shade400,
-                Colors.green.shade700,
-              ],
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const BookingApprovalPage()),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: [
+                    HoverCard(
+                      icon: LucideIcons.badgeCheck,
+                      title: 'Booking\nApproval',
+                      gradientColors: [
+                        Colors.green.shade400,
+                        Colors.green.shade700
+                      ],
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const BookingApprovalPage()),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    HoverCard(
+                      icon: LucideIcons.mapPin,
+                      title: 'Spot\nManagement',
+                      gradientColors: [
+                        Colors.deepPurple.shade400,
+                        Colors.deepPurple.shade700
+                      ],
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const SpotManagementPage()),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    HoverCard(
+                      icon: LucideIcons.calendarDays,
+                      title: 'Event\nManagement',
+                      gradientColors: [
+                        Colors.orange.shade400,
+                        Colors.deepOrange.shade600
+                      ],
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const EventManagementPage()),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 20),
-            HoverCard(
-              icon: LucideIcons.mapPin,
-              title: 'Spot\nManagement',
-              gradientColors: [
-                Colors.deepPurple.shade400,
-                Colors.deepPurple.shade700,
-              ],
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const SpotManagementPage()),
-              ),
-            ),
-            const SizedBox(height: 20),
-            HoverCard(
-              icon: LucideIcons.calendarDays,
-              title: 'Event\nManagement',
-              gradientColors: [
-                Colors.orange.shade400,
-                Colors.deepOrange.shade600,
-              ],
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const EventManagementPage()),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) =>
+                        LogoutConfirmationDialog(onConfirm: _handleLogout),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.redAccent,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                icon: const Icon(Icons.logout, color: Colors.white),
+                label: const Text(
+                  "Logout",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontFamily: 'Urbanist',
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
             ),
           ],

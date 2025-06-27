@@ -10,7 +10,8 @@ class AdminRegistrationPage extends StatefulWidget {
   State<AdminRegistrationPage> createState() => _AdminRegistrationPageState();
 }
 
-class _AdminRegistrationPageState extends State<AdminRegistrationPage> {
+class _AdminRegistrationPageState extends State<AdminRegistrationPage>
+    with SingleTickerProviderStateMixin {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -23,6 +24,32 @@ class _AdminRegistrationPageState extends State<AdminRegistrationPage> {
 
   bool _isPasswordVisible = false;
   bool _isLoading = false;
+
+  late AnimationController _animationController;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(1.0, 0.0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   Future<void> _registerAdmin() async {
     String name = _nameController.text.trim();
@@ -64,7 +91,9 @@ class _AdminRegistrationPageState extends State<AdminRegistrationPage> {
       }
 
       UserCredential result = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+        email: email,
+        password: password,
+      );
       User? user = result.user;
 
       if (user != null && !user.emailVerified) {
@@ -102,8 +131,9 @@ class _AdminRegistrationPageState extends State<AdminRegistrationPage> {
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                      content: Text("Email not verified yet."),
-                      backgroundColor: Colors.red),
+                    content: Text("Email not verified yet."),
+                    backgroundColor: Colors.red,
+                  ),
                 );
               }
             },
@@ -131,83 +161,107 @@ class _AdminRegistrationPageState extends State<AdminRegistrationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar:
-          const CustomAppBar(title: "Admin Registration", showBackButton: true),
-      backgroundColor: const Color.fromARGB(255, 235, 233, 240),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(40.0),
-          child: Column(
-            children: [
-              const Text("Admin Sign Up",
+    return SlideTransition(
+      position: _slideAnimation,
+      child: Scaffold(
+        backgroundColor: Colors.black.withOpacity(0.85),
+        appBar:
+            const CustomAppBar(title: "SpotEase SUST", showBackButton: true),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(40.0),
+            child: Column(
+              children: [
+                const Text(
+                  "Admin Sign Up",
                   style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Urbanist',
-                      color: Color.fromARGB(255, 104, 61, 222))),
-              const SizedBox(height: 20),
-              _buildTextField("Name", _nameController),
-              const SizedBox(height: 10),
-              _buildTextField("ID", _idController),
-              const SizedBox(height: 10),
-              _buildTextField("Email", _emailController),
-              const SizedBox(height: 10),
-              _buildTextField("Password", _passwordController,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Urbanist',
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                _buildTextField("Name", _nameController, icon: Icons.person),
+                const SizedBox(height: 10),
+                _buildTextField("ID", _idController, icon: Icons.badge),
+                const SizedBox(height: 10),
+                _buildTextField("Email", _emailController, icon: Icons.email),
+                const SizedBox(height: 10),
+                _buildTextField(
+                  "Password",
+                  _passwordController,
                   obscureText: !_isPasswordVisible,
                   isPassword: true,
+                  icon: Icons.lock,
                   toggleVisibility: () =>
-                      setState(() => _isPasswordVisible = !_isPasswordVisible)),
-              const SizedBox(height: 10),
-              _buildTextField("Confirm Password", _confirmPasswordController,
+                      setState(() => _isPasswordVisible = !_isPasswordVisible),
+                ),
+                const SizedBox(height: 10),
+                _buildTextField(
+                  "Confirm Password",
+                  _confirmPasswordController,
                   obscureText: !_isPasswordVisible,
                   isPassword: true,
+                  icon: Icons.lock_outline,
                   toggleVisibility: () =>
-                      setState(() => _isPasswordVisible = !_isPasswordVisible)),
-              const SizedBox(height: 20),
-              _isLoading
-                  ? const CircularProgressIndicator()
-                  : SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: _registerAdmin,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.purple,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30)),
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                        ),
-                        child: const Text("Register",
-                            style: TextStyle(
+                      setState(() => _isPasswordVisible = !_isPasswordVisible),
+                ),
+                const SizedBox(height: 20),
+                _isLoading
+                    ? const CircularProgressIndicator()
+                    : SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _registerAdmin,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.purple,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30)),
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                          ),
+                          child: const Text("Register",
+                              style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
                                 fontFamily: 'Urbanist',
-                                fontWeight: FontWeight.bold)),
+                                fontWeight: FontWeight.bold,
+                              )),
+                        ),
                       ),
-                    ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildTextField(String hintText, TextEditingController controller,
-      {bool obscureText = false,
-      bool isPassword = false,
-      VoidCallback? toggleVisibility}) {
+  Widget _buildTextField(
+    String hintText,
+    TextEditingController controller, {
+    bool obscureText = false,
+    bool isPassword = false,
+    IconData? icon,
+    VoidCallback? toggleVisibility,
+  }) {
     return TextField(
       controller: controller,
       obscureText: obscureText,
+      style: const TextStyle(color: Colors.white, fontFamily: 'Urbanist'),
       decoration: InputDecoration(
         filled: true,
-        fillColor: Colors.white,
+        fillColor: Colors.grey[900],
         hintText: hintText,
+        hintStyle:
+            const TextStyle(color: Colors.white70, fontFamily: 'Urbanist'),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        prefixIcon: icon != null ? Icon(icon, color: Colors.white70) : null,
         suffixIcon: isPassword
             ? IconButton(
-                icon:
-                    Icon(obscureText ? Icons.visibility_off : Icons.visibility),
+                icon: Icon(
+                    obscureText ? Icons.visibility_off : Icons.visibility,
+                    color: Colors.white70),
                 onPressed: toggleVisibility,
               )
             : null,

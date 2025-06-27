@@ -49,7 +49,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
+      backgroundColor: Colors.black,
+      appBar: const CustomAppBar(
         title: "Details",
         showBackButton: true,
       ),
@@ -62,16 +63,24 @@ class _EventDetailPageState extends State<EventDetailPage> {
               ),
             )
           : SingleChildScrollView(
-              child: EventDetailWidget(
-                title: widget.event.title,
-                description: widget.event.description,
-                department: widget.event.organizationName,
-                email: userEmail,
-                userName: userName,
-                date: widget.event.date.toLocal().toString().split(' ')[0],
-                session: widget.event.session,
-                spotName: widget.event.spotName,
-                applicationImageUrl: widget.event.applicationImageUrl,
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  textTheme: Theme.of(context).textTheme.apply(
+                        bodyColor: Colors.white,
+                        displayColor: Colors.white,
+                      ),
+                ),
+                child: EventDetailWidget(
+                  title: widget.event.title,
+                  description: widget.event.description,
+                  department: widget.event.organizationName,
+                  email: userEmail,
+                  userName: userName,
+                  date: widget.event.date.toLocal().toString().split(' ')[0],
+                  session: widget.event.session,
+                  spotName: widget.event.spotName,
+                  applicationImageUrl: widget.event.applicationImageUrl,
+                ),
               ),
             ),
     );

@@ -4,6 +4,9 @@ import 'package:project/pages/user_booking_history.dart';
 import 'package:project/services/storage_service.dart';
 import 'package:project/widgets/custom_app_bar.dart';
 import 'package:project/services/auth_service.dart';
+import 'package:project/widgets/profile_picture.dart';
+import 'package:project/widgets/bottom_nav_bar.dart';
+import 'package:project/widgets/logout_confirmation_dialog.dart';
 
 class ProfilePage extends StatefulWidget {
   final String uid;
@@ -14,7 +17,8 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePage>
+    with SingleTickerProviderStateMixin {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final AuthService _authService = AuthService();
   final StorageService _profileStorageService = StorageService();
@@ -26,15 +30,37 @@ class _ProfilePageState extends State<ProfilePage> {
   String _profileImageUrl = "";
   bool _isLoading = true;
 
+  late AnimationController _animationController;
+  late Animation<Offset> _slideAnimation;
+
   @override
   void initState() {
     super.initState();
     _user = _auth.currentUser;
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(2, 0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+    _animationController.forward();
     _fetchUserData();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   Future<void> _fetchUserData() async {
     final userData = await _profileStorageService.fetchUserData();
+    if (!mounted) return;
     if (userData != null) {
       setState(() {
         _username = userData["username"];
@@ -48,11 +74,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> _uploadProfilePicture() async {
     String? imageUrl = await _profileStorageService.uploadProfilePicture();
+    if (!mounted) return;
     if (imageUrl != null) {
       setState(() {
         _profileImageUrl = imageUrl;
       });
-
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Profile picture updated successfully!")),
       );
@@ -64,96 +90,101 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _showEditProfileDialog() {
-    final TextEditingController usernameController =
-        TextEditingController(text: _username);
-    final TextEditingController regController =
-        TextEditingController(text: _registration);
+    final usernameController = TextEditingController(text: _username);
+    final regController = TextEditingController(text: _registration);
 
     showDialog(
       context: context,
       builder: (context) {
         return Dialog(
+          backgroundColor: Colors.black,
           insetPadding:
               const EdgeInsets.symmetric(horizontal: 30, vertical: 100),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 400),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('Edit Profile',
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Urbanist')),
-                  const SizedBox(height: 20),
-                  TextField(
-                    controller: usernameController,
-                    decoration: const InputDecoration(labelText: 'Username'),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Edit Profile Details',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Urbanist',
+                    color: Colors.white,
                   ),
-                  TextField(
-                    controller: regController,
-                    decoration:
-                        const InputDecoration(labelText: 'Registration No'),
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: usernameController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelText: 'Username',
+                    labelStyle: TextStyle(color: Colors.white70),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white54),
+                    ),
                   ),
-                  const SizedBox(height: 10),
-                  ElevatedButton.icon(
-                    onPressed: () async {
-                      Navigator.of(context).pop();
-                      await _uploadProfilePicture();
-                    },
-                    icon: const Icon(Icons.upload),
-                    label: const Text('Update Profile Picture'),
+                ),
+                TextField(
+                  controller: regController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelText: 'Registration No',
+                    labelStyle: TextStyle(color: Colors.white70),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white54),
+                    ),
                   ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text(
-                          'Cancel',
-                          style: TextStyle(fontFamily: 'Urbanist'),
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          String newName = usernameController.text.trim();
-                          String newReg = regController.text.trim();
-
-                          if (newName.isNotEmpty && newName != _username) {
-                            await _profileStorageService
-                                .updateUsername(newName);
-                          }
-                          if (newReg.isNotEmpty && newReg != _registration) {
-                            await _profileStorageService
-                                .updateRegistration(newReg);
-                          }
-
-                          await _fetchUserData();
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Cancel',
+                          style: TextStyle(color: Colors.white70)),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        String newName = usernameController.text.trim();
+                        String newReg = regController.text.trim();
+                        if (newName.isNotEmpty && newName != _username) {
+                          await _profileStorageService.updateUsername(newName);
+                        }
+                        if (newReg.isNotEmpty && newReg != _registration) {
+                          await _profileStorageService
+                              .updateRegistration(newReg);
+                        }
+                        await _fetchUserData();
+                        if (mounted) {
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                                 content: Text("Profile updated successfully!")),
                           );
-                        },
-                        child: const Text(
-                          'Save',
-                          style: TextStyle(fontFamily: 'Urbanist'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                        }
+                      },
+                      child: const Text('Save'),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         );
       },
     );
+  }
+
+  void _handleLogout() async {
+    await _authService.signOut();
+    if (mounted) {
+      Navigator.pushNamedAndRemoveUntil(context, '/welcome', (route) => false);
+    }
   }
 
   void _showChangePasswordDialog() {
@@ -165,6 +196,7 @@ class _ProfilePageState extends State<ProfilePage> {
       context: context,
       builder: (context) {
         return Dialog(
+          backgroundColor: Colors.black,
           insetPadding:
               const EdgeInsets.symmetric(horizontal: 30, vertical: 100),
           shape:
@@ -179,25 +211,45 @@ class _ProfilePageState extends State<ProfilePage> {
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      fontFamily: 'Urbanist'),
+                      fontFamily: 'Urbanist',
+                      color: Colors.white),
                 ),
                 const SizedBox(height: 20),
                 TextField(
                   controller: currentPasswordController,
                   obscureText: true,
-                  decoration:
-                      const InputDecoration(labelText: 'Current Password'),
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelText: 'Current Password',
+                    labelStyle: TextStyle(color: Colors.white70),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white54),
+                    ),
+                  ),
                 ),
                 TextField(
                   controller: newPasswordController,
                   obscureText: true,
-                  decoration: const InputDecoration(labelText: 'New Password'),
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelText: 'New Password',
+                    labelStyle: TextStyle(color: Colors.white70),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white54),
+                    ),
+                  ),
                 ),
                 TextField(
                   controller: confirmPasswordController,
                   obscureText: true,
-                  decoration:
-                      const InputDecoration(labelText: 'Confirm New Password'),
+                  style: const TextStyle(color: Colors.white),
+                  decoration: const InputDecoration(
+                    labelText: 'Confirm New Password',
+                    labelStyle: TextStyle(color: Colors.white70),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white54),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 Row(
@@ -205,10 +257,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(fontFamily: 'Urbanist'),
-                      ),
+                      child: const Text('Cancel',
+                          style: TextStyle(color: Colors.white70)),
                     ),
                     ElevatedButton(
                       onPressed: () async {
@@ -251,10 +301,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           );
                         }
                       },
-                      child: const Text(
-                        'Update',
-                        style: TextStyle(fontFamily: 'Urbanist'),
-                      ),
+                      child: const Text('Update'),
                     ),
                   ],
                 ),
@@ -266,95 +313,104 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  void _handleLogout() async {
-    await _authService.signOut();
-    if (mounted) {
-      Navigator.pushNamedAndRemoveUntil(context, '/welcome', (route) => false);
-    }
-  }
-
+  @override
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 240, 240, 240),
-      appBar: const CustomAppBar(title: "SpotEase SUST", showBackButton: true),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    GestureDetector(
-                      onTap: _uploadProfilePicture,
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.grey.shade300,
-                        backgroundImage: _profileImageUrl.isNotEmpty
-                            ? NetworkImage(_profileImageUrl)
-                            : null,
-                        child: _profileImageUrl.isEmpty
-                            ? const Icon(Icons.camera_alt, size: 40)
-                            : null,
+    return SlideTransition(
+      position: _slideAnimation,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        extendBodyBehindAppBar: false,
+        appBar:
+            const CustomAppBar(title: "SpotEase SUST", showBackButton: true),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 20, 24, 35),
+                Color.fromARGB(255, 34, 40, 58),
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      ProfilePictureWidget(
+                        imageUrl: _profileImageUrl,
+                        onUpload: _uploadProfilePicture,
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      _username,
-                      style: const TextStyle(
+                      const SizedBox(height: 10),
+                      Text(
+                        _username,
+                        style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
-                          fontFamily: 'Urbanist'),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      _email,
-                      style: const TextStyle(
+                          fontFamily: 'Urbanist',
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        _email,
+                        style: const TextStyle(
                           fontSize: 16,
-                          color: Color.fromARGB(255, 118, 115, 115),
+                          color: Colors.grey,
                           fontWeight: FontWeight.bold,
-                          fontFamily: 'Urbanist'),
-                    ),
-                    const SizedBox(height: 20),
-                    _buildInfoTile("Registration No", _registration),
-                    const SizedBox(height: 20),
-                    _buildActionButton(
-                        Icons.edit, "Edit Profile", _showEditProfileDialog),
-                    _buildActionButton(Icons.lock, "Change Password",
-                        _showChangePasswordDialog),
-                    _buildActionButton(Icons.history, "Booking History", () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              UserBookingHistoryPage(uid: widget.uid),
-                        ),
-                      );
-                    }),
-                    const SizedBox(height: 30),
-                    ElevatedButton.icon(
-                      onPressed: _handleLogout,
-                      icon: const Icon(Icons.logout, color: Colors.white),
-                      label: const Text(
-                        "Logout",
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontFamily: 'Urbanist'),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.redAccent,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 40),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          fontFamily: 'Urbanist',
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                      _buildInfoTile("Registration No", _registration),
+                      const SizedBox(height: 20),
+                      _buildActionButton(Icons.upload, "Upload Profile Picture",
+                          _uploadProfilePicture),
+                      _buildActionButton(Icons.edit, "Edit Profile Details",
+                          _showEditProfileDialog),
+                      _buildActionButton(Icons.lock, "Change Password",
+                          _showChangePasswordDialog),
+                      _buildActionButton(Icons.history, "Booking History", () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                UserBookingHistoryPage(uid: widget.uid),
+                          ),
+                        );
+                      }),
+                      const SizedBox(height: 30),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (_) => LogoutConfirmationDialog(
+                                onConfirm: _handleLogout),
+                          );
+                        },
+                        icon: const Icon(Icons.logout, color: Colors.white),
+                        label: const Text("Logout",
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white,
+                                fontFamily: 'Urbanist')),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.redAccent,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 40),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ),
+        ),
+      ),
     );
   }
 
@@ -362,27 +418,26 @@ class _ProfilePageState extends State<ProfilePage> {
     return Container(
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.white.withOpacity(0.05),
         borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 5,
-            spreadRadius: 2,
-          ),
-        ],
+        border: Border.all(color: Colors.white24),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title,
-              style: const TextStyle(fontSize: 16, fontFamily: 'Urbanist')),
+              style: const TextStyle(
+                fontSize: 16,
+                fontFamily: 'Urbanist',
+                color: Colors.white70,
+              )),
           Text(value,
               style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Urbanist',
-                  color: Colors.blueGrey)),
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Urbanist',
+                color: Colors.white,
+              )),
         ],
       ),
     );
@@ -390,15 +445,20 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildActionButton(IconData icon, String label, VoidCallback onTap) {
     return ListTile(
-      leading: Icon(icon, color: Colors.blue),
+      leading: Icon(icon, color: Colors.cyanAccent),
       title: Text(label,
-          style: const TextStyle(fontSize: 16, fontFamily: 'Urbanist')),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+          style: const TextStyle(
+            fontSize: 16,
+            fontFamily: 'Urbanist',
+            color: Colors.white,
+          )),
+      trailing:
+          const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.white54),
       onTap: onTap,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
-      tileColor: Colors.white,
+      tileColor: Colors.white.withOpacity(0.05),
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
     );
   }

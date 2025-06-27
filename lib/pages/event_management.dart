@@ -80,36 +80,46 @@ class _EventManagementPageState extends State<EventManagementPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Edit Event Details"),
+          backgroundColor: Colors.grey[900],
+          title: const Text("Edit Event Details",
+              style: TextStyle(color: Colors.white, fontFamily: 'Urbanist')),
           content: SingleChildScrollView(
             child: Column(
               children: [
                 TextField(
                   controller: titleController,
+                  style: const TextStyle(color: Colors.white),
                   decoration: const InputDecoration(
                     labelText: 'Event Title',
-                    labelStyle: TextStyle(fontFamily: 'Urbanist'),
+                    labelStyle: TextStyle(
+                        fontFamily: 'Urbanist', color: Colors.white70),
                   ),
                 ),
                 TextField(
                   controller: descriptionController,
+                  style: const TextStyle(color: Colors.white),
                   decoration: const InputDecoration(
                     labelText: 'Description',
-                    labelStyle: TextStyle(fontFamily: 'Urbanist'),
+                    labelStyle: TextStyle(
+                        fontFamily: 'Urbanist', color: Colors.white70),
                   ),
                 ),
                 TextField(
                   controller: organizationController,
+                  style: const TextStyle(color: Colors.white),
                   decoration: const InputDecoration(
                     labelText: 'Organization Name',
-                    labelStyle: TextStyle(fontFamily: 'Urbanist'),
+                    labelStyle: TextStyle(
+                        fontFamily: 'Urbanist', color: Colors.white70),
                   ),
                 ),
                 TextField(
                   controller: sessionController,
+                  style: const TextStyle(color: Colors.white),
                   decoration: const InputDecoration(
                     labelText: 'Session',
-                    labelStyle: TextStyle(fontFamily: 'Urbanist'),
+                    labelStyle: TextStyle(
+                        fontFamily: 'Urbanist', color: Colors.white70),
                   ),
                 ),
               ],
@@ -118,7 +128,8 @@ class _EventManagementPageState extends State<EventManagementPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text("Cancel"),
+              child:
+                  const Text("Cancel", style: TextStyle(color: Colors.white70)),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -156,9 +167,10 @@ class _EventManagementPageState extends State<EventManagementPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: CustomAppBar(title: "Event Management", showBackButton: true),
       body: DefaultTextStyle(
-        style: const TextStyle(fontFamily: 'Urbanist'),
+        style: const TextStyle(fontFamily: 'Urbanist', color: Colors.white),
         child: Column(
           children: [
             Padding(
@@ -167,7 +179,7 @@ class _EventManagementPageState extends State<EventManagementPage> {
                 onPressed: _movePastEvents,
                 icon: const Icon(Icons.archive, color: Colors.white),
                 label: const Text(
-                  "Move Past Events",
+                  "Remove Past Events",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -201,6 +213,7 @@ class _EventManagementPageState extends State<EventManagementPage> {
                         final event = events[index];
 
                         return Card(
+                          color: Colors.black.withOpacity(0.3),
                           margin: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 8),
                           elevation: 4,
@@ -218,18 +231,27 @@ class _EventManagementPageState extends State<EventManagementPage> {
                                     style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
-                                        fontFamily: 'Urbanist'),
+                                        fontFamily: 'Urbanist',
+                                        color: Colors.white),
                                   ),
                                   subtitle: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text("Spot: ${event.spotName}"),
+                                      Text("Spot: ${event.spotName}",
+                                          style: const TextStyle(
+                                              color: Colors.white70)),
                                       Text(
-                                          "Date: ${DateFormat('dd-MM-yyyy').format(event.date)}"),
-                                      Text("Session: ${event.session}"),
+                                          "Date: ${DateFormat('dd-MM-yyyy').format(event.date)}",
+                                          style: const TextStyle(
+                                              color: Colors.white70)),
+                                      Text("Session: ${event.session}",
+                                          style: const TextStyle(
+                                              color: Colors.white70)),
                                       Text(
-                                          "Organization: ${event.organizationName}"),
+                                          "Organization: ${event.organizationName}",
+                                          style: const TextStyle(
+                                              color: Colors.white70)),
                                     ],
                                   ),
                                 ),

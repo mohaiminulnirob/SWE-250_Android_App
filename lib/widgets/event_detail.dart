@@ -30,20 +30,20 @@ class EventDetailWidget extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 6),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.black87),
+        color: Colors.black.withOpacity(0.4),
+        border: Border.all(color: Colors.white70),
         borderRadius: BorderRadius.circular(10),
         boxShadow: const [
           BoxShadow(
-            color: Colors.black12,
-            blurRadius: 2,
-            offset: Offset(1, 1),
+            color: Colors.black26,
+            blurRadius: 4,
+            offset: Offset(2, 2),
           ),
         ],
       ),
       child: Row(
         children: [
-          const Icon(Icons.info_outline, color: Colors.black87),
+          const Icon(Icons.info_outline, color: Colors.white70),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
@@ -51,7 +51,7 @@ class EventDetailWidget extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.black87,
+                color: Colors.white,
                 fontFamily: 'Urbanist',
               ),
             ),
@@ -64,7 +64,8 @@ class EventDetailWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return SingleChildScrollView(
+    return Container(
+      color: Colors.black.withOpacity(0.6),
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,7 +74,7 @@ class EventDetailWidget extends StatelessWidget {
             "Event Details",
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              color: Colors.white,
               fontFamily: 'Urbanist',
             ),
           ),
@@ -108,7 +109,7 @@ class EventDetailWidget extends StatelessWidget {
             "Description",
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              color: Colors.white,
               fontFamily: 'Urbanist',
             ),
           ),
@@ -119,7 +120,7 @@ class EventDetailWidget extends StatelessWidget {
               description,
               style: const TextStyle(
                 fontSize: 15,
-                color: Colors.black87,
+                color: Colors.white70,
                 fontFamily: 'Urbanist',
               ),
             ),

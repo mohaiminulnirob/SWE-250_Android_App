@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project/models/event_model.dart';
+import 'package:intl/intl.dart';
 
 class SpotUpcomingEvents extends StatefulWidget {
   final List<Event> events;
@@ -46,21 +47,62 @@ class _SpotUpcomingEventsState extends State<SpotUpcomingEvents> {
     );
   }
 
+  String _getRemainingTime(DateTime date) {
+    final now = DateTime.now();
+    final difference = date.difference(now);
+
+    if (difference.inDays > 0) {
+      return "${difference.inDays}d left";
+    } else if (difference.inHours > 0) {
+      return "${difference.inHours}h left";
+    } else if (difference.inMinutes > 0) {
+      return "${difference.inMinutes}m left";
+    } else if (difference.inDays <= -1) {
+      return "Ended";
+    } else {
+      return "Started";
+    }
+  }
+
   void _showEventDetails(Event event) {
+    final formattedDate = DateFormat('dd-MM-yyyy').format(event.date);
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(event.title),
+        backgroundColor: const Color.fromARGB(255, 44, 49, 60),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        title: Text(
+          event.title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Urbanist',
+            fontSize: 18,
+            color: Colors.white,
+          ),
+        ),
         content: Text(
-          "Organization: ${event.organizationName}\n"
-          "Date: ${event.date.day}-${event.date.month}-${event.date.year}\n"
-          "Session: ${event.session}\n\n"
-          "Description: ${event.description}",
+          "📅 Date: $formattedDate\n"
+          "🏢 Organization: ${event.organizationName}\n"
+          "📘 Session: ${event.session}\n\n"
+          "📝 Description:\n${event.description}",
+          style: const TextStyle(
+            fontFamily: 'Urbanist',
+            fontSize: 14,
+            color: Colors.white,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Close"),
+            child: const Text(
+              "Close",
+              style: TextStyle(
+                fontFamily: 'Urbanist',
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
           ),
         ],
       ),
@@ -68,19 +110,35 @@ class _SpotUpcomingEventsState extends State<SpotUpcomingEvents> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ListTile(
-          title: const Text("Upcoming Events",
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(.5),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: ListTile(
+            title: const Text(
+              "Upcoming Events",
               style: TextStyle(
-                  fontWeight: FontWeight.bold, fontFamily: 'Urbanist')),
-          trailing: Icon(_isOpen ? Icons.expand_less : Icons.expand_more),
-          onTap: () {
-            setState(() {
-              _isOpen = !_isOpen;
-            });
-          },
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Urbanist',
+                color: Colors.white,
+              ),
+            ),
+            trailing: Icon(
+              _isOpen ? Icons.expand_less : Icons.expand_more,
+              color: Colors.white,
+            ),
+            onTap: () {
+              setState(() {
+                _isOpen = !_isOpen;
+              });
+            },
+          ),
         ),
         if (_isOpen)
           Stack(
@@ -93,22 +151,42 @@ class _SpotUpcomingEventsState extends State<SpotUpcomingEvents> {
                   itemCount: widget.events.length,
                   itemBuilder: (context, index) {
                     final event = widget.events[index];
+                    final remainingTime = _getRemainingTime(event.date);
+
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8),
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
-                          color: Colors.grey[200],
+                          color: const Color.fromARGB(255, 15, 127, 152),
                         ),
                         child: ListTile(
                           leading: const Icon(Icons.event,
                               color: Colors.purpleAccent),
-                          title: Text(event.title),
+                          title: Text(
+                            event.title,
+                            style: const TextStyle(
+                              fontFamily: 'Urbanist',
+                              color: Colors.white,
+                            ),
+                          ),
                           subtitle: Text(
-                              "${event.organizationName} • ${event.session}"),
-                          trailing:
-                              const Icon(Icons.arrow_forward_ios, size: 16),
+                            "${event.spotName} • ${event.organizationName}",
+                            style: const TextStyle(
+                              fontFamily: 'Urbanist',
+                              color: Colors.white,
+                            ),
+                          ),
+                          trailing: Text(
+                            remainingTime,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Urbanist',
+                              color: Colors.white,
+                            ),
+                          ),
                           onTap: () => _showEventDetails(event),
                         ),
                       ),
@@ -121,7 +199,7 @@ class _SpotUpcomingEventsState extends State<SpotUpcomingEvents> {
                   top: 0,
                   child: IconButton(
                     icon: const Icon(Icons.arrow_upward,
-                        color: Color.fromARGB(231, 9, 9, 9)),
+                        color: Color.fromARGB(231, 255, 255, 255)),
                     onPressed: _scrollUp,
                   ),
                 ),
@@ -130,7 +208,7 @@ class _SpotUpcomingEventsState extends State<SpotUpcomingEvents> {
                   bottom: 0,
                   child: IconButton(
                     icon: const Icon(Icons.arrow_downward,
-                        color: Color.fromARGB(231, 9, 9, 9)),
+                        color: Color.fromARGB(231, 255, 255, 255)),
                     onPressed: _scrollDown,
                   ),
                 ),

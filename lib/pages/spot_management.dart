@@ -46,23 +46,29 @@ class _SpotManagementPageState extends State<SpotManagementPage> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
+              backgroundColor: Colors.grey[900],
               title: const Text("Reserve a Spot",
-                  style: TextStyle(fontFamily: 'Urbanist')),
+                  style:
+                      TextStyle(fontFamily: 'Urbanist', color: Colors.white)),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     DropdownButtonFormField<String>(
+                      dropdownColor: Colors.grey[850],
                       decoration: const InputDecoration(
                         labelText: 'Select Spot',
-                        labelStyle: TextStyle(fontFamily: 'Urbanist'),
+                        labelStyle: TextStyle(
+                            fontFamily: 'Urbanist', color: Colors.white70),
                       ),
+                      style: const TextStyle(color: Colors.white),
                       items: spots
                           .map((spot) => DropdownMenuItem(
                                 value: spot,
                                 child: Text(spot,
                                     style: const TextStyle(
-                                        fontFamily: 'Urbanist')),
+                                        fontFamily: 'Urbanist',
+                                        color: Colors.white)),
                               ))
                           .toList(),
                       onChanged: (value) =>
@@ -76,6 +82,12 @@ class _SpotManagementPageState extends State<SpotManagementPage> {
                           initialDate: DateTime.now(),
                           firstDate: DateTime.now(),
                           lastDate: DateTime(2100),
+                          builder: (context, child) {
+                            return Theme(
+                              data: ThemeData.dark(),
+                              child: child!,
+                            );
+                          },
                         );
                         if (pickedDate != null) {
                           setState(() => selectedDate = pickedDate);
@@ -90,16 +102,20 @@ class _SpotManagementPageState extends State<SpotManagementPage> {
                     ),
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(
+                      dropdownColor: Colors.grey[850],
                       decoration: const InputDecoration(
                         labelText: 'Select Session',
-                        labelStyle: TextStyle(fontFamily: 'Urbanist'),
+                        labelStyle: TextStyle(
+                            fontFamily: 'Urbanist', color: Colors.white70),
                       ),
+                      style: const TextStyle(color: Colors.white),
                       items: sessions
                           .map((session) => DropdownMenuItem(
                                 value: session,
                                 child: Text(session,
                                     style: const TextStyle(
-                                        fontFamily: 'Urbanist')),
+                                        fontFamily: 'Urbanist',
+                                        color: Colors.white)),
                               ))
                           .toList(),
                       onChanged: (value) =>
@@ -112,7 +128,8 @@ class _SpotManagementPageState extends State<SpotManagementPage> {
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
                   child: const Text("Cancel",
-                      style: TextStyle(fontFamily: 'Urbanist')),
+                      style: TextStyle(
+                          fontFamily: 'Urbanist', color: Colors.white70)),
                 ),
                 ElevatedButton(
                   onPressed: selectedSpot != null &&
@@ -128,6 +145,8 @@ class _SpotManagementPageState extends State<SpotManagementPage> {
                           _loadBookedDates();
                         }
                       : null,
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   child: const Text("Reserve",
                       style: TextStyle(fontFamily: 'Urbanist')),
                 ),
@@ -162,6 +181,7 @@ class _SpotManagementPageState extends State<SpotManagementPage> {
     }
 
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: CustomAppBar(title: "Spot Management", showBackButton: true),
       body: Column(
         children: [
@@ -169,8 +189,12 @@ class _SpotManagementPageState extends State<SpotManagementPage> {
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
               onPressed: _reserveSpotDialog,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueAccent,
+              ),
               child: const Text("Reserve a Spot",
-                  style: TextStyle(fontFamily: 'Urbanist')),
+                  style:
+                      TextStyle(fontFamily: 'Urbanist', color: Colors.white)),
             ),
           ),
           Expanded(
@@ -180,41 +204,48 @@ class _SpotManagementPageState extends State<SpotManagementPage> {
                 final dates = entry.value;
                 final isExpanded = _expandedSpots[spot] ?? false;
 
-                return ExpansionTile(
-                  title: Text(
-                    spot,
-                    style: const TextStyle(
-                      fontFamily: 'Urbanist',
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                return Theme(
+                  data: ThemeData.dark(),
+                  child: ExpansionTile(
+                    backgroundColor: Colors.grey[850],
+                    collapsedBackgroundColor: Colors.grey[900],
+                    title: Text(
+                      spot,
+                      style: const TextStyle(
+                        fontFamily: 'Urbanist',
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  initiallyExpanded: isExpanded,
-                  onExpansionChanged: (expanded) {
-                    setState(() => _expandedSpots[spot] = expanded);
-                  },
-                  children: dates.isEmpty
-                      ? [
-                          const ListTile(
-                            title: Text(
-                              "No booked dates found.",
-                              style: TextStyle(
-                                fontStyle: FontStyle.italic,
-                                fontFamily: 'Urbanist',
-                                color: Colors.grey,
-                              ),
-                            ),
-                          )
-                        ]
-                      : dates
-                          .map((b) => ListTile(
-                                title: Text(
-                                  "${DateFormat('dd-MM-yyyy').format(b.date)} | ${b.session}",
-                                  style:
-                                      const TextStyle(fontFamily: 'Urbanist'),
+                    initiallyExpanded: isExpanded,
+                    onExpansionChanged: (expanded) {
+                      setState(() => _expandedSpots[spot] = expanded);
+                    },
+                    children: dates.isEmpty
+                        ? [
+                            const ListTile(
+                              title: Text(
+                                "No booked dates found.",
+                                style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  fontFamily: 'Urbanist',
+                                  color: Colors.white70,
                                 ),
-                              ))
-                          .toList(),
+                              ),
+                            )
+                          ]
+                        : dates
+                            .map((b) => ListTile(
+                                  title: Text(
+                                    "${DateFormat('dd-MM-yyyy').format(b.date)} | ${b.session}",
+                                    style: const TextStyle(
+                                        fontFamily: 'Urbanist',
+                                        color: Colors.white),
+                                  ),
+                                ))
+                            .toList(),
+                  ),
                 );
               }).toList(),
             ),
@@ -223,7 +254,7 @@ class _SpotManagementPageState extends State<SpotManagementPage> {
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton.icon(
               onPressed: _removePastDates,
-              icon: const Icon(Icons.delete),
+              icon: const Icon(Icons.delete, color: Colors.white),
               label: const Text(
                 "Remove Past Dates",
                 style: TextStyle(
@@ -234,7 +265,7 @@ class _SpotManagementPageState extends State<SpotManagementPage> {
                 ),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueAccent,
+                backgroundColor: Colors.redAccent,
               ),
             ),
           ),

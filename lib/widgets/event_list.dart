@@ -31,6 +31,8 @@ class _EventListState extends State<EventList> {
       return "${difference.inHours}h left";
     } else if (difference.inMinutes > 0) {
       return "${difference.inMinutes}m left";
+    } else if (difference.inDays <= (-1)) {
+      return "Ended";
     } else {
       return "Started";
     }
@@ -64,7 +66,7 @@ class _EventListState extends State<EventList> {
                   ),
                 ),
                 subtitle: Text(
-                  "${event.organizationName} • ${event.session}",
+                  "${event.spotName} • ${event.organizationName}",
                   style: const TextStyle(
                     fontFamily: 'Urbanist',
                     color: Colors.white,

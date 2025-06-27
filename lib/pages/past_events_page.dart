@@ -59,7 +59,8 @@ class _PastEventsPageState extends State<PastEventsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: "Past Events", showBackButton: true),
+      backgroundColor: Colors.black.withOpacity(0.85),
+      appBar: const CustomAppBar(title: "SpotEase SUST", showBackButton: true),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _buildExpandableSpotwiseEvents(),
@@ -75,6 +76,7 @@ class _PastEventsPageState extends State<PastEventsPage> {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Card(
+              color: Colors.grey[900],
               margin: const EdgeInsets.symmetric(vertical: 6.0),
               child: ExpansionTile(
                 title: Text(
@@ -83,8 +85,11 @@ class _PastEventsPageState extends State<PastEventsPage> {
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Urbanist',
+                    color: Colors.white,
                   ),
                 ),
+                iconColor: Colors.white,
+                collapsedIconColor: Colors.white,
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -96,7 +101,7 @@ class _PastEventsPageState extends State<PastEventsPage> {
                               style: TextStyle(
                                 fontStyle: FontStyle.italic,
                                 fontSize: 14,
-                                color: Colors.grey,
+                                color: Colors.white70,
                               ),
                             ),
                           )

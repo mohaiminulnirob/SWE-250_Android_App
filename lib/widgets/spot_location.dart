@@ -15,7 +15,6 @@ class _SpotLocationState extends State<SpotLocation> {
   late final WebViewController _controller;
 
   @override
-  @override
   void initState() {
     super.initState();
     final embedUrl = spotEmbedUrls[widget.spotName];
@@ -56,25 +55,45 @@ class _SpotLocationState extends State<SpotLocation> {
 
     return Column(
       children: [
-        ListTile(
-          title: const Text(
-            "Location",
-            style:
-                TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Urbanist'),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.5),
+            borderRadius: BorderRadius.circular(12),
           ),
-          trailing: Icon(_isOpen ? Icons.expand_less : Icons.expand_more),
-          onTap: () {
-            setState(() {
-              _isOpen = !_isOpen;
-            });
-          },
+          margin: const EdgeInsets.symmetric(vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: ListTile(
+            title: const Text(
+              "Location",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Urbanist',
+                color: Colors.white,
+              ),
+            ),
+            trailing: Icon(
+              _isOpen ? Icons.expand_less : Icons.expand_more,
+              color: Colors.white,
+            ),
+            onTap: () {
+              setState(() {
+                _isOpen = !_isOpen;
+              });
+            },
+          ),
         ),
         if (_isOpen)
           SizedBox(
             height: 300,
             width: 600,
             child: embedUrl == null
-                ? const Center(child: Text("Map not available for this spot."))
+                ? const Center(
+                    child: Text(
+                      "Map not available for this spot.",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
                 : WebViewWidget(controller: _controller),
           ),
       ],
