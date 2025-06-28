@@ -70,6 +70,12 @@ class _BookingApprovalPageState extends State<BookingApprovalPage> {
       }
       await _sendStatusEmail(event, 'approved');
       await _loadEventRequests();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Event approved and user notified."),
+          backgroundColor: Color.fromARGB(255, 0, 12, 6),
+        ),
+      );
     } catch (e) {
       debugPrint("Error approving event: $e");
     }
@@ -85,6 +91,13 @@ class _BookingApprovalPageState extends State<BookingApprovalPage> {
       }
       await _sendStatusEmail(event, 'rejected');
       await _loadEventRequests();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Event rejected and user notified."),
+          backgroundColor: Color.fromARGB(255, 21, 0, 0),
+        ),
+      );
     } catch (e) {
       debugPrint("Error rejecting event: $e");
     }

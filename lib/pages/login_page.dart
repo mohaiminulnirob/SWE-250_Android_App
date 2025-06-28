@@ -72,7 +72,6 @@ class _LoginPageState extends State<LoginPage>
     setState(() => _isLoading = false);
 
     if (user != null) {
-      await notifyTodaysEvents();
       if (mounted) {
         Navigator.push(
           context,
@@ -80,6 +79,7 @@ class _LoginPageState extends State<LoginPage>
             builder: (context) => HomePage(uid: user.uid),
           ),
         );
+        await notifyTodaysEvents();
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
